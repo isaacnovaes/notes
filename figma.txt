@@ -1,0 +1,17 @@
+ctrl + d => duplicate frame (or select and hold alt)
+
+for a ruler, just draga and drop from the window corners
+
+while drawing  shape, hold shift to create equal sides shape
+
+for border radius on just one side, drag border point while holding alt
+
+double click on a shape to change it the way you want, hold ctrl to change border radius
+
+select one item, them make a biger selection by clicking while holding shift on another item
+
+select an item while pressing z (focus on the item)
+
+I key => open color picker
+
+Check effects for a backgroud blur effect

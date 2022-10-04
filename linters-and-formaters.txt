@@ -1,0 +1,149 @@
+Prettier -----------------------------------------------
+	install: npm install --save-dev --save-exact prettier
+	create:  .prettierrc.json
+	ignore: .prettierignore => includes by default **/.git, **/.svn, **/.hg, **/node_modules
+	format: npx prettier --write .
+	check formatted files: npx prettier --check .
+	
+	=> ignore the next node
+	// prettier-ignore JS
+	{/* prettier-ignore */} JSX
+	<!-- prettier-ignore --> HTML
+	/* prettier-ignore */  CSS	
+
+	Basic config
+	
+	{
+    	"tabWidth": 4, => default is 2
+    	"trailingComma": "es5" 
+	}
+
+eslint -----------------------------------------------
+Run eslint with prettier without problems
+	npm install --save-dev eslint-config-prettier
+	in .eslintrc.js
+		"extends": ["some-other-config-you-use","prettier"]
+		No need for extending "prettier/react", extending "prettier" is enough for TS and React
+
+	Turn off rules that conflict or are unnecessary with Prettier
+		install: npm install --save-dev eslint-plugin-prettier
+	
+	Run "npx eslint-config-prettier <filename>" for checking conflictiong rules in .eslintrc file
+	
+	Add in .eslintrs.js
+		"extends": [..., "prettier/prettier"]
+		"plugins": ["prettier"],
+  		"rules": {
+    		"prettier/prettier": ["error", {}, {"endOfLine":"auto"}]
+  		}
+	 add plugin:prettier/recommended as the last extension in your .eslintrc.json
+		"extends": [..., "plugin:prettier/recommended"]
+
+	Exactly what does plugin:prettier/recommended do? Well, this is what it expands to:
+
+		{
+  			"extends": ["prettier"],
+  			"plugins": ["prettier"],
+  			"rules": {
+    			"prettier/prettier": "error",
+   			"arrow-body-style": "off",
+    			"prefer-arrow-callback": "off"
+  			}
+		}
+
+npm init @eslint/config
+
+"extends": "eslint:recommended"
+	
+Rules
+
+	"prettier/prettier": ["error", {}, { endOfLine: "auto" }],
+        "no-duplicate-imports": ["error", { includeExports: true }],
+        "no-template-curly-in-string": "warn",
+        "no-use-before-define": "error",
+        camelcase: ["error", { properties: "always" }],
+        "default-case": "warn",
+        "no-lone-blocks": "error",
+        "no-shadow": ["error", { hoist: "all" }],
+        "prefer-const": "warn",
+        yoda: "error",
+
+@typescript-eslint/eslint-plugin -------------------------
+
+npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
+
+   extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    "plugin:@typescript-eslint/strict",
+  ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  root: true,
+
+ parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json'],
+  },
+
+// put babel, eslint, .etc files in the .eslintignore for avoiding annoying warns
+
+
+eslint-plugin-react ------------------------------------
+
+npm install eslint eslint-plugin-react --save-dev
+
+ "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime"
+  ]
+
+  "plugins": [
+    "react"
+  ]
+
+	"settings": {
+    	"react": {
+      		"version": "detect",
+		}
+	}
+
+	"parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+
+eslint-plugin-react-hooks---------------------------
+
+npm install eslint-plugin-react-hooks --save-dev
+"extends": [
+    // ...
+    "plugin:react-hooks/recommended"
+  ]
+
+eslint-plugin-jsx-a11y ---------------------------
+
+npm install eslint-plugin-jsx-a11y --save-dev
+
+  "plugins": ["jsx-a11y"]
+  "extends": ["plugin:jsx-a11y/recommended"]
+
+
+eslint-plugin-react-native --------------------------
+
+npm install --save-dev eslint-plugin-react-native
+
+"plugins": [
+    "react",
+    "react-native"
+  ]
+
+ "env": {
+    "react-native/react-native": true
+  }
+
+
+eslint-plugin-jest ---------------------------

@@ -1,0 +1,70 @@
+Make tests that closely resemble how your app is interacted by the users!
+
+The more your tests resemble the way your software is used, the more confidence they can give you.  
+
+Implementation details are things which users of your code will not typically use, see, or even know about.
+
+Make implementation detail free testing to avoid false positive and false negative tests
+	Can break when you refactor application code. False negatives
+	May not fail when you break application code. False positives
+
+You may want to avoid the following implementation details:
+
+	Internal state of a component
+	Internal methods of a component
+	Lifecycle methods of a component
+	Child components
+
+getBy, findBy, queryBy
+	no match: error, error, null
+	1 match: return element
+	1+ match: error
+	retry (Async/Await): no, yes, no
+getAllBy, findAllBy, queryAllBy
+	no match: error, error, array
+	1 match: array
+	1+ match: array
+	retry (Async/Await): no, yes, no
+
+findBy...: Returns a Promise which resolves when an element is found which matches the given query. 
+The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms
+
+findAllBy...: Returns a promise which resolves to an array of elements when any elements are found which match the given query. 
+The promise is rejected if no elements are found after a default timeout of 1000ms.
+
+Priority
+	getByRole, if possible, filter with getByRole('button', {name: /submit/i})
+	getByLabelText
+	getByPlaceholderText
+	getByText
+	getByDisplayValue
+	getByTitle
+	getByTestId
+
+Debugging
+	screen.debug() => renders DOM
+	screen.debug(Element | Element[])
+
+	screen.logTestingPlaygroundURL() => nice one when you don't know which query to use
+	screen.logTestingPlaygroundURL(Element)
+
+Manual queries (not recommended, once users don't interact with your app by css selectors (classname, id))
+	const {container} = render(<MyComponent />)
+	const foo = container.querySelector('[data-foo="bar"]')
+
+RN epecific packages -------------------------------------------------
+	npm install --save-dev jest                                // downgrade it to 27.5.1
+	npm install --save-dev @types/jest
+	npm install --save-dev @testing-library/react-native
+	npm install --save-dev @testing-library/jest-native
+	npm install --save-dev react-test-renderer@ver                // install it at the same version than react
+	
+	"jest":
+	{
+ 		 "preset": "react-native",
+ 		 "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"]
+	}
+
+prefer-user-event: userEvent requires a dom environement so it is not compatible with this library
+----------------------------------------------------------------------
+	use `import '@testing-library/jest-dom'` in each test file

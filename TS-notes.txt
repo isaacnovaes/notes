@@ -1,0 +1,124 @@
+npm i typescript => install TS and tsc, the TS compiler
+ tsc <filename.js> = transpilers a TS  file into a JS file
+
+While the default target is ES3, the great majority of current browsers support ES2015. Most developers can therefore safely specify ES2015 or above as a target
+
+The strict flag in the CLI, or "strict": true in a tsconfig.json, toggles on all type-checking strictness simultaneously
+
+Type annotation => add a type to something
+	Parameter type annotations
+	Even if you don’t have type annotations on your parameters, TypeScript will still check that you passed the right number of arguments
+
+Type annotations always come just after the identifier
+	
+Use typeof operator to narrow down the types of a Union made out of primitives
+	Array.isArray for array types
+
+Type Aliases and interfaces
+	type alias it’s exactly as if you had written the aliased type
+	the key distinction is that a type cannot be re-opened to add new properties
+	type aliases can be extended with the & operator, but it's not worth it
+
+Use interface until you need to use features from type, e.g. typing a primitive
+
+Use literal types whenever possible.
+	for example
+	const [displayMode, setDisplayMode] useState<'table' | 'gantt'>('gantt'); // don't make it <string>, please
+
+Type Assertions => when you tell TS the type of something by using `as` operator
+	Sometimes this rule can be too conservative and will disallow more complex coercions that might be valid. 
+If this happens, you can use two assertions, first to any or unknown, then to the desired type:
+	
+	const a = (expr as any) as T;
+	
+	You can use as const to convert the entire object to be type literals:
+	const req = { url: "https://example.com", method: "GET" } as const;
+		url is not of type string, but type "https://example.com"
+
+The as const suffix acts like const but for the type system, ensuring that all properties are assigned the LITERAL TYPE instead of a more general version like string or number
+
+Generics with constraints => use EXTENDS when you fall into a generic where the property X doesn't exist on type T
+	function longest<Type extends { length: number }>(a: Type, b: Type) {
+ 		 if (a.length >= b.length) {
+   			 return a;
+  		} else {
+    			return b;
+  		}
+	} // it means that the type Type has at least the property length
+
+In TypeScript, generics are used when we want to describe a correspondence between two values. 
+	 If a type parameter only appears in one location, strongly reconsider if you actually need it
+	
+Overload signatures are the different function definitions which receive different types of parameters
+When writing an overloaded function, you should always have two or more signatures above the implementation signature
+
+function makeDate(timestamp: number): Date;                                    // overload signature 
+function makeDate(timestamp: number, d:number): Date;                          // overload signature
+function makeDate(m: number, d: number, y: number): Date;                      // overload signature
+function makeDate(mOrTimestamp: number, d?: number, y?: number): Date {        // implementation signature
+  if (d !== undefined && y !== undefined) {
+    return new Date(y, mOrTimestamp, d);
+  } else {
+    return new Date(mOrTimestamp);
+  }
+}
+
+Use unknown instead of any
+Never
+	In the return type => when the function returns an error (throws an exception)
+	When there is nothing left in a union => the variable receives the never type
+
+Prefer () => void over Function
+
+Default property
+
+Note that there is currently no way to place type annotations within destructuring patterns. 
+This is because this syntax already has a meaning in JS, which is to assign a different name to a destructed property
+So when you want to assign a default value, do the following:
+
+{propName = defaultValue} : DefinedType
+
+Then, in the DefinedType, make the propName optional
+
+type OrNull<Type> = Type | null; => USE MOR GENERIC TYPES AND GENERIC INTERFACES!
+
+Tuple Types
+A tuple type is another sort of Array type that knows exactly how many elements it contains, and exactly which types it contains at specific positions.
+
+Indexed Access Types => take a specific type of a bigger type
+
+type Person = { age: number; name: string; alive: boolean };
+type Age = Person["age"]; // number
+type I1 = Person["age" | "name"]; // number | string
+type I2 = Person[keyof Person]; // number | string | boolean;
+
+Template Literal Types
+They have the same syntax as template literal strings in JavaScript, but are used in type positions
+
+	type World = "world";
+ 
+	type Greeting = `hello ${World}`;
+
+	When a union is used in the interpolated position, the type is the set of every possible string literal that could be represented by each union member:
+
+	type EmailLocaleIDs = "welcome_email" | "email_heading";
+	type FooterLocaleIDs = "footer_title" | "footer_sendoff";
+ 
+	type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`; // 4 possible types
+
+Intrinsic String Manipulation Types
+
+	Uppercase<StringType>
+		type Greeting = "Hello, world"
+		type ShoutyGreeting = Uppercase<Greeting> // type ShoutyGreeting = "HELLO, WORLD"
+
+	Lowercase<StringType>
+		type Greeting = "Hello, world"
+		type QuietGreeting = Lowercase<Greeting> // type QuietGreeting = "hello, world"
+          
+	Capitalize<StringType>
+		Converts the first character in the string to an uppercase equivalent.
+
+	Uncapitalize<StringType>
+		Converts the first character in the string to a lowercase equivalent.
+
