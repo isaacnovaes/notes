@@ -143,10 +143,10 @@ Reducers must be pure. Similar to state updater functions, reducers run during r
 The component will use the value of the nearest <Context.Provider value={value}> in the UI tree above it.
 If the Provider doesn't provide a value, the provided value will be the default (createContext(value))
 
-Extract components and pass JSX as children to them. 
+Extract components and pass JSX as children props to them. 
 If you pass some data through many layers of intermediate components that don’t use that data (and only pass it further down), this often means that you forgot to extract some components along the way. 
 For example, maybe you pass data props like posts to visual components that don’t use them directly, like <Layout posts={posts} />. 
-Instead, make Layout take children as a prop, and render <Layout><Posts posts={posts} /></Layout>.
+Instead render <Layout><Posts posts={posts} /></Layout>.
 This reduces the number of layers between the component specifying the data and the one that needs it.
 
 Before you use context, try passing props or passing JSX as children
@@ -292,6 +292,34 @@ Performance hooks
 In practice, you can make a lot of memoization unnecessary by following a few principles:
 
 1 - When a component visually wraps other components, let it accept JSX as children. Then, if the wrapper component updates its own state, React knows that its children don’t need to re-render.
+	// Fun, subtle trick about the children prop, in the case of the parent of the wrapper component uses memo API
+		The children prop act just like another object being passed down as props
+		In the context of performance/memoization, if it's needed, memoize the children prop passed to the wrapper, or the memoization will break
+
+	-------------------------------
+	const Wrapper = ({children}) => {
+		const [isOpen,setIsOpen] = useState(true) // when the state changes, the children don’t render
+		return <div>{children}</div>
+	}
+
+	--------------------------------
+	const ChildMemo = memo(<Child/>)
+
+	const Parent = () => {
+		const [isOpen,setIsOpen] = useState(true) // when the state changes, Wrap and Child rerender, even through Child uses memo
+		return <Wrapper><Child/></Wrapper>
+	}
+ --------------------------------------
+		<Wrapper someProp={{name:'isaac'}}></Wrapper>
+		<Wrapper><Child/></Wrapper> = <Wrapper children={<Child/>}/> (syntactic sugar)
+		<Wrapper><div><p>Hello</p></div></Wrapper> = <Wrapper children={<div><p>Hello</p></div>}/> (syntactic sugar)
+		// here, the children prop will be recreated on each re-render, just like {name:'isaac'} passed down as props
+
+		In the context of performance/memoization, to fix this issue: 
+		const child = useMemo(()=><Child/> ,[]) // use Child as a memoized value in the Parent component
+		<Wrapper>{child}</Wrapper>
+
+
 2 - Prefer local state and don’t lift state up any further than necessary. Don’t keep transient state like forms and whether an item is hovered at the top of your tree or in a global state library.
 3 - Keep your rendering logic pure. If re-rendering a component causes a problem or produces some noticeable visual artifact, it’s a bug in your component! Fix the bug instead of adding memoization.
 4 - Avoid unnecessary Effects that update state. Most performance problems in React apps are caused by chains of updates originating from Effects that cause your components to render over and over.
@@ -337,3 +365,11 @@ memo API
 	If you provide a custom arePropsEqual implementation, you must compare every prop, including functions. 
 		Functions often close over the props and state of parent components. 
 		If you return true when oldProps.onClick !== newProps.onClick, your component will keep “seeing” the props and state from a previous render inside its onClick handler, leading to very confusing bugs
+
+useLayoutEffect
+Call useLayoutEffect perform the layout measurements before the browser repaints the screen, like position, size
+	It avoids initial flickering, like when rendering the component with wrong data
+	With useEffect, you render the component with the wrong data, then on the useEffect, you render the component again with the correct data
+	Use it wisely, because it can hurt Performance, because it delays the browser display
+		React updates the DOM, you make the necessary data manipulation, then the browser finally displays the component
+		

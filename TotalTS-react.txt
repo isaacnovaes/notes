@@ -1,0 +1,11 @@
+use react types ComponentProps, ComponentPropsWithoutRef, and ComponentPropsWithRef (forwardRef API) to take the component or intrinsic elements props
+ex: 
+	interface InputProps extends React.ComponentPropsWithoutRef<'input'> {}
+	const MyInput = (props: InputProps) => {
+		return <input {...props} />
+	}
+
+	interface React.ComponentPropsWithoutRef<typeof MyComponent> {}
+
+Whenever using a state setter function, type the return type for not returning unintended values
+	
