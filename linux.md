@@ -11,8 +11,6 @@
 - desktop environment: gui on top of OS, like GNOME, KDE, Xfce
 - shells: bash, zsh
 
----
-
 ## Startup
 
 When the computer is powered on, the Basic Input/Output System (BIOS) initializes the hardware, including the screen and
@@ -20,12 +18,9 @@ keyboard, and tests the main memory. This process is also called POST (Power On 
 
 The BIOS software is stored on a read-only memory (ROM) chip on the motherboard.
 
----
-
 ## Systemd
 
-One systemd command (**_systemctl_**) is used for most basic tasks. While we have not yet talked about working at the
-command line, here is a brief listing of its use:
+One systemd command (**_systemctl_**) is used for most basic tasks. Here is a brief listing of its use:
 
 - Starting, stopping, restarting a **_service_** (using httpd, the Apache web server, as an example) on a currently
   running
@@ -52,10 +47,6 @@ scope of our discussion.
 
 ## File systems
 
-![img.png](img.png)
-
-![img_1.png](img_1.png)
-
 `Trash location: ~/.local/share/Trash`
 
 If there is nothing in the trash, this directory does not exist
@@ -65,12 +56,6 @@ If there is nothing in the trash, this directory does not exist
 - GNOME is a popular desktop environment
 - nautilus is the file manager
 - gedit is the default text editor
-
----
-
-`You can always launch a program such as this by doing Alt-F2 and typing in the command`
-
----
 
 ## Anatomy of a command
 
@@ -212,11 +197,7 @@ At some point, one of your applications may stop working properly. How do you el
 To terminate a process, you can type
 `kill -SIGKILL <pid>` or `kill -9 <pid>`
 
----
-
 ## PLEASE, TEST `vimtutor`
-
----
 
 ## User environment
 
