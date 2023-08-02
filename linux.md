@@ -6,7 +6,7 @@
 
 - kernel: brain of the OS, glue between the hardware and applications
 - distribution: collection of software making up a Linux-based OS
-- boot loader: program that boots the OS, like GRUB
+- bootloader: program that boots the OS, like GRUB
 - service: a program that runs as a background process, like httpd, nfsd
 - desktop environment: gui on top of OS, like GNOME, KDE, Xfce
 - shells: bash, zsh
@@ -72,25 +72,25 @@ If there is nothing in the trash, this directory does not exist
 ## Basic commands
 
 - `cat`
-  - -n for displaying the line numbers
+    - -n for displaying the line numbers
 - `less` for analyzing big files
-  - `SPACE` scroll down one full page
-  - `ENTER` scroll down one line
-  - `B` scroll up one full page
-  - `Y` scroll up one line
+    - `SPACE` scroll down one full page
+    - `ENTER` scroll down one line
+    - `B` scroll up one full page
+    - `Y` scroll up one line
 - `tail` and `head`
-  - -number for displaying the wanted lines
+    - -number for displaying the wanted lines
 - `mv` does two things
-  - move a file to a different location
-  - rename a file
+    - move a file to a different location
+    - rename a file
 - `wc` for the following information of a file checking
-  - number of lines
-  - number of words
-  - bytes
+    - number of lines
+    - number of words
+    - bytes
 - `mkdir` and `rmdir` for working with directories
-  - use -p for creating parent directories as well
-  - use `rm -rfi` for deleting `non-empty` directories
-    - -f force, -i interactively
+    - use -p for creating parent directories as well
+    - use `rm -rfi` for deleting `non-empty` directories
+        - -f force, -i interactively
 
 ## I/O Redirection
 
@@ -129,7 +129,8 @@ Use `>>` to add a content to a file
 ## Pipe
 
 - Pipe the output of one command or program into another as its input
-- This is extraordinarily efficient because command2 and command3 do not have to wait for the previous pipeline commands to complete before they can begin processing at the data in their input streams
+- This is extraordinarily efficient because command2 and command3 do not have to wait for the previous pipeline commands
+  to complete before they can begin processing at the data in their input streams
 
 ```bash
 command1 | command2 | command3
@@ -139,10 +140,12 @@ command1 | command2 | command3
 
 ### `find`
 
-- It recurses down the filesystem tree from any particular directory (or set of directories) and locates files that match specified conditions. `The default pathname is always the present working directory`
+- It recurse down the filesystem tree from any particular directory (or set of directories) and locates files that match
+  specified conditions. `The default pathname is always the present working directory`
 - `-name` (only list files with a certain pattern in their name)
 - `-iname` (also ignore the case of file names)
-- `-type` (which will restrict the results to files of a certain specified type, such as `d` for directory, `l` for symbolic link, or `f` for a regular file, etc.).
+- `-type` (which will restrict the results to files of a certain specified type, such as `d` for directory, `l` for
+  symbolic link, or `f` for a regular file, etc.).
 
 Searching for files and directories named gcc:
 
@@ -163,7 +166,7 @@ To find and remove all files that end with .swp:
 `find -name "*.swp" -exec rm {} ’;’`
 
 - `-exec <command>`
-  - command to executed on all files that the `find` found
+    - command to executed on all files that the `find` found
 - `{}` a placeholder for the founded files
 - `’;’` obligatory, indicates the end of the command
 
@@ -179,15 +182,17 @@ Good for testing the command first
 ### Table: Wildcards
 
 | Wildcard | Result                                                                                                    |
-| -------- | --------------------------------------------------------------------------------------------------------- |
+|----------|-----------------------------------------------------------------------------------------------------------|
 | ?        | Matches any single character                                                                              |
 | \*       | Matches any string of characters                                                                          |
 | [set]    | Matches any character in the set of characters, for example [adf] will match any occurrence of a, d, or f |
 | [!set]   | Matches any character not in the set of characters                                                        |
 
-To search for files using the ? wildcard, replace each unknown character with ?. For example, if you know only the first two letters are 'ba' of a three-letter filename with an extension of .out, type ls ba?.out.
+To search for files using the ? wildcard, replace each unknown character with ?. For example, if you know only the first
+two letters are 'ba' of a three-letter filename with an extension of .out, type ls ba?.out.
 
-To search for files using the \* wildcard, replace the unknown string with \*. For example, if you remember only that the extension was .out, type ls \*.out.
+To search for files using the \* wildcard, replace the unknown string with \*. For example, if you remember only that
+the extension was .out, type ls \*.out.
 
 ## Process
 
@@ -207,14 +212,15 @@ To terminate a process, you can type
 ## User environment
 
 - whoami
-  - list current user
+    - list current user
 - who
-  - list logged on users
-  - `-a` print more info about those users
+    - list logged on users
+    - `-a` print more info about those users
 
 ## Order of startup files
 
-The standard prescription is that when you first log in to Linux, /etc/profile is read and evaluated, after which the following files are searched (if they exist) in the listed order:
+The standard prescription is that when you first log in to Linux, /etc/profile is read and evaluated, after which the
+following files are searched (if they exist) in the listed order:
 
 1. ~/.bash_profile
 2. ~/.bash_login
@@ -222,16 +228,19 @@ The standard prescription is that when you first log in to Linux, /etc/profile i
 
 `The Linux login shell evaluates whatever startup file that it comes across first and ignores the rest`
 
-However, every time you create a new shell, or terminal window, etc., you do not perform a full system login; only a file named ~/.bashrc file is read and evaluated
+However, every time you create a new shell, or terminal window, etc., you do not perform a full system login; only a
+file named ~/.bashrc file is read and evaluated
 
 `In Debian 12, only ~/.profile exists for full login. Then, ~/.bashrc is read for every terminal launch`
 
 ## Environment variables
 
 - `type set, env, or export to see them`
-  - env print what you want
+    - env print what you want
 
-By default, variables created within a script are only available to the current shell; child processes (sub-shells) will not have access to values that have been set or modified. Allowing child processes to see the values requires use of the `export`
+By default, variables created within a script are only available to the current shell; child processes (sub-shells) will
+not have access to values that have been set or modified. Allowing child processes to see the values requires use of
+the `export`
 command.
 
 ### Add something to your PATH
@@ -240,22 +249,25 @@ command.
 PATH=$PATH:new_addition_path
 ```
 
-| Task                                  | Command                                                                                                                                                                     |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Show the value of a specific variable | echo $SHELL                                                                                                                                                                 |
-| Export a new variable value           | export VARIABLE=value (or VARIABLE=value; export VARIABLE)                                                                                                                  |
-| `Add a variable permanently`          | Edit ~/.bashrc and add the line export VARIABLE=value <br/> <br/> type source ~/.bashrc or just . ~/.bashrc (dot ~/.bashrc); or `just start a new shell by typing **bash**` |
+| Task                                  | Command                                                                                                                                                                       |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Show the value of a specific variable | echo $SHELL                                                                                                                                                                   |
+| Export a new variable value           | export VARIABLE=value                                                                                                                                                         |
+| `Add a variable permanently`          | `Edit ~/.bashrc and add the line export VARIABLE=value` <br/> <br/> type source ~/.bashrc or just . ~/.bashrc (dot ~/.bashrc); or `just start a new shell by typing **bash**` |
 
 ## $PATH variable
 
-`PATH` is an ordered list of directories (the path) which is scanned when a command is given to find the appropriate program or script to run
+`PATH` is an ordered list of directories (the path) which is scanned when a command is given to find the appropriate
+program or script to run
 
-Each directory in the path is separated by colons (:). A null (empty) directory name (or ./) indicates the current directory at any given time.
+Each directory in the path is separated by colons (:). A null (empty) directory name (or ./) indicates the current
+directory at any given time.
 
 - :path1:path2
 - path1::path2
 
-In the example :path1:path2, there is a null directory before the first colon (:). Similarly, for path1::path2 there is a null directory between path1 and path2
+In the example :path1:path2, there is a null directory before the first colon (:). Similarly, for path1::path2 there is
+a null directory between path1 and path2
 
 ### prefix a private bin directory to your path
 
@@ -271,7 +283,7 @@ Contains the commands used in the shell
 ## Keyboard shortcuts
 
 | Keyboard shortcut | Task                                              |
-| ----------------- | ------------------------------------------------- |
+|-------------------|---------------------------------------------------|
 | CTRL-L            | Clears the screen                                 |
 | CTRL-D            | Exits the current shell                           |
 | CTRL-A            | Goes to the beginning of the line                 |
@@ -281,15 +293,18 @@ Contains the commands used in the shell
 
 ## File ownership (file/directory or group)
 
-In Linux and other UNIX-based operating systems, every file is associated with a user who is the owner. Every file is also associated with a group (a subset of all users) which has an interest in the file and certain rights, or permissions: read `(r)`, write `(w)`, and execute `(x)`.
+In Linux and other UNIX-based operating systems, every file is associated with a user who is the owner. Every file is
+also associated with a group (a subset of all users) which has an interest in the file and certain rights, or
+permissions: read `(r)`, write `(w)`, and execute `(x)`.
 
 | Command | Usage                                                                                                                                      |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+|---------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | chown   | change ownership of a file or directory                                                                                                    |
 | chgrp   | change group ownership                                                                                                                     |
 | chmod   | Used to change the permissions on the file, which can be done separately for owner, group and the rest of the world (often named as other) |
 
-Files have three kinds of permissions: read `(r)`, write `(w)`, execute `(x)`. These are generally represented as in `rwx`. These permissions affect three groups of owners: user/owner `(u)`, group `(g)`, and others `(o)`
+Files have three kinds of permissions: read `(r)`, write `(w)`, execute `(x)`. These are generally represented as
+in `rwx`. These permissions affect three groups of owners: user/owner `(u)`, group `(g)`, and others `(o)`
 
 As a result, you have the following three groups of three permissions:
 
@@ -330,13 +345,16 @@ It is often used to read and print files, as well as for simply viewing file con
 
 However, the main purpose of cat is often to combine (concatenate) multiple files together
 
-| Command                   | Usage                                                                                                                          |
+| Command | Usage |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --- | ---------------------------------------------------------------- |
-| cat file1 file2           | Concatenate multiple files and display the output; i.e. the entire                                                             |     | content of the first file is followed by that of the second file |
-| cat file1 file2 > newfile | Combine multiple files and save the output into a new file                                                                     |
-| cat file >> existingfile  | Append a file to the end of an existing file                                                                                   |
-| `cat > file`              | Any subsequent lines typed will go into the file, `until CTRL-D` is typed <br> If the file does not exist, it creates the file |
-| `cat >> file`             | Any subsequent lines are appended to the file, `until CTRL-D` is typed <br> If the file does not exist, it creates the file    |
+| cat file1 file2 | Concatenate multiple files and display the output; i.e. the entire | | content of the first file is
+followed by that of the second file |
+| cat file1 file2 > newfile | Combine multiple files and save the output into a new file |
+| cat file >> existingfile | Append a file to the end of an existing file |
+| `cat > file`              | Any subsequent lines typed will go into the file, `until CTRL-D` is typed <br> If the file
+does not exist, it creates the file |
+| `cat >> file`             | Any subsequent lines are appended to the file, `until CTRL-D` is typed <br> If the file
+does not exist, it creates the file |
 
 ### cat interactively (`prefer echo` for single line input)
 
@@ -353,7 +371,13 @@ However, the main purpose of cat is often to combine (concatenate) multiple file
 
 ## Reading files on IDEs is expensive!
 
-For example, a system might maintain one simple large log file to record details of all system warnings and errors. (Modern systems tend to have more fine-grained logging facilities but still may have some large logging files.) Due to a security attack or a malfunction, the administrator might be forced to check for some data by navigating within the file. In such cases, directly opening the file in an editor will probably be inefficient (due to high memory utilization) because most text editors usually try to read the whole file into memory first. Instead, one can use less to view the contents of such a large file, scrolling up and down page by page, without the system having to place the entire file in memory before starting. This is much faster than using a text editor.
+For example, a system might maintain one simple large log file to record details of all system warnings and errors. (
+Modern systems tend to have more fine-grained logging facilities but still may have some large logging files.) Due to a
+security attack or a malfunction, the administrator might be forced to check for some data by navigating within the
+file. In such cases, directly opening the file in an editor will probably be inefficient (due to high memory
+utilization) because most text editors usually try to read the whole file into memory first. Instead, one can use less
+to view the contents of such a large file, scrolling up and down page by page, without the system having to place the
+entire file in memory before starting. This is much faster than using a text editor.
 
 Use file utilities, like `less`, `tail`, `head`
 
@@ -362,7 +386,7 @@ Use file utilities, like `less`, `tail`, `head`
 The table explains some basic operations, where pattern is the current string and replace_string is the new string.
 
 | Command                                | Usage                                                 |
-| -------------------------------------- | ----------------------------------------------------- |
+|----------------------------------------|-------------------------------------------------------|
 | sed s/pattern/replace_string/ file     | Substitute first string occurrence in every line      |
 | sed s/pattern/replace_string/g file    | Substitute all string occurrences in every line       |
 | sed 1,3s/pattern/replace_string/g file | Substitute all string occurrences in a range of lines |
@@ -370,13 +394,16 @@ The table explains some basic operations, where pattern is the current string an
 
 `Instead of \, you can use #, @, :, or any character to separate the pattern and the replace_string`
 
-You must use the -i option with care, because the action is not reversible. It is always safer to use sed without the –i option and then replace the file yourself, as shown in the following example:
+You must use the -i option with care, because the action is not reversible. It is always safer to use sed without the –i
+option and then replace the file yourself, as shown in the following example:
 
 ```bash
 sed s/pattern/replace_string/g file1 > file2
 ```
 
-The above command will replace all occurrences of pattern with replace_string in file1 and move the contents to file2. The contents of file2 can be viewed with cat file2. If you approve, you can then overwrite the original file with mv file2 file1.
+The above command will replace all occurrences of pattern with replace_string in file1 and move the contents to file2.
+The contents of file2 can be viewed with cat file2. If you approve, you can then overwrite the original file with mv
+file2 file1.
 
 ## sort
 
@@ -415,7 +442,7 @@ uniq removes duplicate consecutive lines in a text file
 - read `variable`
 - echo `$variable`
 - declaring a variable
-  
+
 ```bash
 VARIABLE=VALUE
 ```
@@ -433,7 +460,7 @@ VARIABLE=VALUE
 Passing arguments to scripts `./first-bash-script.sh isaac isael miriam`
 
 | Parameter     | Meaning                       |
-| ------------- | ----------------------------- |
+|---------------|-------------------------------|
 | $0            | Script name                   |
 | $1            | First parameter               |
 | $2 , $3, etc. | Second, third parameter, etc. |
@@ -461,12 +488,115 @@ function_name ARG1 ARG2
 ls /lib/modules/$(uname -r)/
 ```
 
+## Constructs
+
+### The ifs Statement
+
+When an if statement is used, the ensuing actions depend on the evaluation of specified conditions, such as:
+
+- Numerical or string comparisons
+- Return value of a command (0 for success)
+- File existence or permissions
+
+```bash
+if [[ condition ]] then
+    statements
+else
+    statements
+fi
+```
+
+#### Examples if
+
+```bash
+if [[ -f "$1" ]] then
+    echo file "$1" exists
+else
+    echo file "$1" does not exist
+fi
+```
+
+```bash
+if [[ -d ~/Desktop/linux ]] then
+    echo directory exists
+else
+    echo directory exists
+fi
+```
+
+### elif statement
+
+```bash
+if [[ condition ]] ; then
+    echo Passed test1
+elif [[ condition ]] ; then
+    echo Passed test2
+else
+    statement
+fi
+```
+
+#### Examples elif
+
+```bash
+if [[ "$name" == "isaac" ]] ; then
+  echo "Name doesn't start with an uppercase"
+elif [[ "$name" == "isael" ]] ; then
+  echo "Hello isael"
+else
+  echo "Hello miriam"
+```
+
+#### Table: Boolean for files
+
+| Condition | Meaning                                                                                          |                                                               
+|-----------|--------------------------------------------------------------------------------------------------|
+| `-e` file | Checks if the file `exists`                                                                      |
+| `-d` file | Checks if the file `is a directory`                                                              |
+| `-f` file | Checks if the file `is a regular file`(i.e., not a symbolic link, device  node, directory, etc.) |
+| `-s` file | Checks if the file `exists and is of non-zero size`                                              |
+| `-r` file | Checks if the file `exists and is readable`                                                      |
+| `-w` file | Checks if the file `exists and is writable`                                                      |
+| `-x` file | Checks if the file `exists and is executable`                                                    |
+
+#### Table: Boolean for numbers
+
+| Condition               | Meaning                                         |
+|-------------------------|-------------------------------------------------|
+| INTEGER1 `-eq` INTEGER2 | INTEGER1 is `equal` to INTEGER2                 |
+| INTEGER1 `-ge` INTEGER2 | INTEGER1 is `greater` than or equal to INTEGER2 |
+| INTEGER1 `-gt` INTEGER2 | INTEGER1 is `greater` than INTEGER2             |
+| INTEGER1 `-le` INTEGER2 | INTEGER1 is `less` than or equal to INTEGER2    |
+| INTEGER1 `-lt` INTEGER2 | INTEGER1 is `less` than INTEGER2                |
+| INTEGER1 `-ne` INTEGER2 | INTEGER1 is `not` equal to INTEGER2             |
+
+#### Table: Boolean for strings
+
+| Condition            | Meaning                           |
+|----------------------|-----------------------------------|
+| `-n STRING`          | the length of STRING is `nonzero` |
+| `-z STRING`          | the length of STRING `is zero`    |
+| `STRING1 == STRING2` | the strings `are equal`           |
+| `STRING1 != STRING2` | the strings `are not equal`       |
+
+`For the full list of booleans`
+
+`Check:  man 1 test`
+
+### Arithmetic expressions
+
+Using the `$((...))` syntax. This is the built-in shell format. The syntax is as follows:
+
+```bash
+echo $((x+1))
+```
+
 ## Command chaining operator
 
 - `;` execute each command sequentially
 - `&&` execute each command sequentially
-  - If a command fails, the next ones are aborted
+    - If a command fails, the next ones are aborted
 - `||` execute each command sequentially
-  - If a command succeeds, the next ones are aborted
+    - If a command succeeds, the next ones are aborted
 
 `Chapter 15: The Bash Shell and Basic Scripting / Constructs`
