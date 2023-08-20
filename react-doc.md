@@ -375,36 +375,56 @@ in other words, this reactive value/func/whatever is an Effect event, so it shou
 
 ## useMemo
 
-// TODO continue from here
+### Is memoization needed?
 
-If the overall logged time adds up to a significant amount (say, 1ms or more), it might make sense to memoize that calculation
+- If the overall logged time adds up to a significant amount (say, 1ms or more), it might make sense to memoize that calculation
 
-As an experiment, you can then wrap the calculation in useMemo to verify whether the total logged time has decreased for that interaction or not
+- As an experiment, you can then wrap the calculation in useMemo to verify whether the total logged time has decreased for that interaction or not
 
-Keep in mind that your machine is probably faster than your users’ so it’s a good idea to test the performance with an artificial slowdown. For example, Chrome offers a CPU Throttling option for this
+- Keep in mind that your machine is probably faster than your users’ so it’s a good idea to test the performance with an artificial slowdown. For example, Chrome offers a CPU Throttling option for this
 
-Performance hooks
+### Children as JSX plus trick
 
 In practice, you can make a lot of memoization unnecessary by following a few principles:
 
-1 - When a component visually wraps other components, let it accept JSX as children. Then, if the wrapper component updates its own state, React knows that its children don’t need to re-render.
-// Fun, subtle trick about the children prop, in the case of the parent of the wrapper component uses memo API
-The children prop act just like another object being passed down as props
-In the context of performance/memoization, if it's needed, memoize the children prop passed to the wrapper, or the memoization will break
+- When a component visually wraps other components, let it accept JSX as children.
+  - Then, if the wrapper component updates its own state, React knows that its children don’t need to re-render.
+- `Fun, subtle trick about the children prop, in the case of the parent of the wrapper component uses memo API`
 
-    -------------------------------
-    const Wrapper = ({children}) => {
-    	const [isOpen,setIsOpen] = useState(true) // when the state changes, the children don’t render
-    	return <div>{children}</div>
-    }
+`The children prop act just like another object being passed down as props`
 
-    --------------------------------
-    const ChildMemo = memo(<Child/>)
+`In the context of performance/memoization, if it's needed, memoize the children prop passed to the wrapper, or the memoization will break`
 
-    const Parent = () => {
-    	const [isOpen,setIsOpen] = useState(true) // when the state changes, Wrap and Child rerender, even through Child uses memo
-    	return <Wrapper><Child/></Wrapper>
-    }
+```tsx
+const Wrapper = ({children}) => {
+  const [isOpen,setIsOpen] = useState(true) 
+  // when the state changes, the children don’t render
+    return <div>{children}</div>
+}
+```
+
+```tsx
+const WrapperMemo = memo(<Child/>)
+const ChildMemo = memo(<Child/>)
+// syntax sugar for
+// const child = React.createElement(MemoChild,props,children)
+// which returns an object representing a DOM tree
+// const child = {
+//      type: MemoChild,
+//      props: {...},
+//      ... internal stuff 
+// }
+// the reference to this object is not memoized
+// so it will make the WrapperMemo to rerender, because the children prop changes on every rerender, just like som={[1,2,3]}
+// <WrapperMemo children={{unmemoized ChildMemo reference}}>
+
+const Parent = () => {
+ 	const [isOpen,setIsOpen] = useState(true) 
+// when the state changes, Wrap and Child rerender, even through Child uses memo
+ 	return <WrapperMemo><ChildMemo/></WrapperMemo>
+}
+```
+// TODO continue from here
 
 ---
 
@@ -469,7 +489,3 @@ It avoids initial flickering, like when rendering the component with wrong data
 With useEffect, you render the component with the wrong data, then on the useEffect, you render the component again with the correct data
 Use it wisely, because it can hurt Performance, because it delays the browser display
 React updates the DOM, you make the necessary data manipulation, then the browser finally displays the component
-
-```
-
-```
