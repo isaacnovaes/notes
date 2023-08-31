@@ -10,71 +10,40 @@ Component => styling, template, logic
 
 `n g d <directive-name> => shortcut to generate a new directive`
 
----
-
-## template property of the object passed to decorator @Component
-
-- use it to write html code inside typescript code (logic), try to avoid it
-- use backticks to write a multiline template
-    - inline template
-     ```js
-    @Component({
-      selector: 'server-component',
-      template: `<server-component></server-component`
-    })
-
----
-
-## similarly to template property, you can declare inline styles with the styles property from @Component decorator
-
-- use backticks to write a multiline style css declarations
-
-```ts
- @Component({
-    selector: 'server-component',
-    template: `<server-component></server-component`,
-    styles: [`
-              h3 {
-                  color: pink;
-              }
-     `]
-})
-```
-
----
-
 ## possible ways to use the selector property of the object passed to @Component decorator
 
-- selector: '[app-servers]' => <div app-servers ></div>
-- selector: '.app-servers' => <div class='app-servers'></div>
-- selector: 'server-component' => <server-component></server-component>
+- selector: '[app-servers]'
+```angular2html
+<div app-servers ></div>
+```
+- selector: '.app-servers'
+```angular2html
+<div class='app-servers'></div>
+```
+- selector: 'server-component' 
+```angular2html
+<server-component></server-component>
+```
 
----
-
-## Data biding => communication between ts code (logic) and html (template)
-
----
 ## OutputData
 - ***string interpolation*** `{{data}}`
   - should return something that can be converted to a string
 - ***property biding*** (HTML element properties) `[property]="data"` (one-way biding)
   - change ts code variable value triggers an update on html, but html update doesn't update ts code variable value
-## ts code => html
+## html => ts code
 - ***event biding*** `(event)="expression"`
 or `(eventName)='myFunc($event)` => for capturing event information
   - React to events 
 ## html <=> ts code
 ### Combination of output data and reacting to user events
 - ***two-way-biding*** `[(ngModel)]="data"`
-  - an update in html triggers an update in ts code and vice-versa (controlled input in React)
-
----
+  - an update in html triggers an update in ts code and vice-versa
 
 ## Directives are instructions in the DOM
 
 ```ts
 @Directive({
-selector: ['appTurnGreen']
+selector: '[appTurnGreen]'
 })
 export class BetterHighlightDirective implements OnInit {
 
@@ -139,10 +108,13 @@ export class BetterHighlightDirective implements OnInit {
   <button  *ngIf="showButton()">Reset username</button>
 
   - `ngIf` with else branch
-  <button  *ngIf="showButton(); else showEmptyMessage">Reset username</button>
+```angular2html
+  <button  *ngIf="showButton; else showEmptyMessage">Reset username</button>
   <ng-template #showEmptyMessage >
   <padding>No empty</padding>
   </ng-template>
+```
+
 - `ngFor` for rendering lists
 
    - `$implicit`: T: The value of the individual items in the iterable (ngForOf).
@@ -172,8 +144,6 @@ export class BetterHighlightDirective implements OnInit {
 </ng-container>
 ```
 
----
-
 ## Attribute directives
 
 ### Change the appearance or behavior of an element, component, or another directive
@@ -185,30 +155,24 @@ export class BetterHighlightDirective implements OnInit {
   `[class.ClassNaMe]='booleanExpression'`
 - `ngModel` => Adds two-way data binding to an HTML form element.
 
----
-
 ## Passing data (bound input properties [props]) to a component & getting data from a component (events)
 
-- @Input('optionalBidingPropertyName') classField
-  Pass data down to a child component
+- @Input('aliasBidingPropertyName') classField;
+  - Pass data down to a child component
 
-- @Output + new EventEmitter<T>();
-  Trigger event to pass data up to the parent component
+- @Output() event = new EventEmitter<T>();
+  - Trigger event to pass data up to the parent component
 
 ### View encapsulation (CSS styles encapsulation policies)
 
 Each component is a view, in the sense that it is separated from other components
 E.g.: the styles that a component has is scoped to this component (not applied to any other component)
 
-#### You can change this default behavior (ViewEncapsulation.Emulated) (encapsulation property of the object passed to
-
-@Component decorator)
+#### You can change this default behavior (ViewEncapsulation.Emulated) (encapsulation property of the object passed to @Component decorator)
 
 - encapsulation: ViewEncapsulation.None (don't encapsulate, e.g: apply the styles everywhere)
 - encapsulation: ViewEncapsulation.ShadowDom
   the same as ViewEncapsulation.Emulated, but encapsulate only where browsers accept it
-
----
 
 ## Element reference (local reference)
 
@@ -229,8 +193,6 @@ E.g.: the styles that a component has is scoped to this component (not applied t
   @ViewChild('serverNameInput', {static: true}) serverContentInput: ElementRef<HTMLInputElement>;
   ```
 
----
-
 ## Render children inside component
 
 In the component template, place `<ng-content></ng-content>` marking where you want to add children.
@@ -247,7 +209,6 @@ While using the component, just pass in the children inside the component
 ```ts
  @ContentChild('paragraphElement', {static: true}) paragraph: ElementRef<HTMLParagraphElement>
 ```
----
 
 ## Component lifecycle
 
@@ -289,8 +250,6 @@ While using the component, just pass in the children inside the component
 #### Cleanup just before Angular destroys the directive or component. Unsubscribe Observables and detach event handlers to avoid memory leaks
 - Called immediately before Angular destroys the directive or component
 
----
-
 ## Services
 
 `ng g s serviceName`
@@ -300,7 +259,6 @@ While using the component, just pass in the children inside the component
   - Or you can use the `@Injectable({providedIn: 'root'})` for an app-wide availability, so that you `don't need to add it to the providers array`
 - Initialize the class in the component constructor
 - Use it as you wish
-- `Never manually instantiates a class (new className()) with the new operator`
 
 ### Providing values from the service
 - Create a getter function on the service class and return a copy of the private service value
@@ -332,7 +290,6 @@ this.recipeService.selectedRecipe.subscribe( recipe => {
       this.selectedRecipe = recipe
     });
 ```
----
 
 ## Routing
 
@@ -523,7 +480,7 @@ export interface CanComponentDeactivate {
 }
 
 export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeactivate> {
-  canDeactivate(component: CanComponentDeactivate, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canDeactivate(component: CanComponentDeactivate, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit {
     return component.canDeactivate();
   }
 
@@ -706,11 +663,18 @@ ngOnDestroy() {
 
 ## Simple, Template-driven (TD) 
 
+- Give an input two pieces of information
+  - `ngModel` directive to tell angular about the inputs you want to control
+  - `name`: their representation will be named as the `name` input attribute
+```angular2html
+<input name="myInput" ngModel>
+```
+
 - On the form tag, add
 ```html
 <form (ngSubmit)="onSubmit(form)" #form="ngForm">
 ```
-  - When the form is submitted, all the inputs will produce an object where the keys are the name property and the values are the input values
+  - When the form is submitted, all the inputs will produce an object `where the keys are the name property and the values are the input values`
 ```ts
   onSubmit(form: NgForm) {
   console.log(form) // form.value has the values of the inputs
@@ -723,7 +687,7 @@ Use the `@ViewChild` reference builder with the `ngForm` type
 
 ### Form inputs register control
 
-Add `ngModel` on the inputs/select elements you want to access
+Add `ngModel` on the input elements you want to access
 
 ### Validation
 
@@ -760,7 +724,7 @@ Take advantage of the following dynamically applied css classes:
 - Use the reference and its properties
 
 ```html
-<input type="email" id="email" class="form-control" ngModel name="userEmail" email required #email='ngModel'>
+<input type="email" id="email" class="form-control" name="userEmail" ngModel email required  #email='ngModel'>
 <span class="help-block" *ngIf="email.invalid && email.touched">Please enter a valid email</span>
 ```
 
@@ -775,7 +739,7 @@ Use `[ngModel]='string'`
 ### Types of biding with `ngModel`
 
 - No biding => just tells Angular it's a form control, giving access to its value in the submitted object
-- One-way-biding => Above and for setting a default value
+- One-way-biding => no biding and for setting a default value
 - Two-way-biding => no biding plus reacting to any value change immediately
 
 ### Grouping form controls
@@ -795,24 +759,32 @@ Use `[ngModel]='string'`
 
 - Form reference `(form: NgForm)=>` `setValue`
   - For all controls
+  - Return the object that represent (form as NgForm).value
 - Form property from the form reference `(form: NgForm).form` => `patchValue`
   - For a specific control
+  - Return an object where the key is the input control and the value is the input value to patch
 
 ### Resetting controls
 
 - Use the `reset` method of the form reference
+  - Reset all form state, including attributes (dirty, touched, pristine, ...)
 - Use the `setValue` and reset all the controls
 
 ## Reactive forms
 
 - Import the `ReactiveFormsModule`
 - Assign your form to a formGroup directive as well as the controls
+  - `Always type your form group declarations for a better TypeScript support`
 ```ts
-signUpForm: FormGroup;
+  signupForm: FormGroup<{
+    gender: FormControl<string | null>,
+    email: FormControl<string | null>,
+    username: FormControl<string | null>
+}>
 
 ngOnInit() {
-  this.signUpForm = new FormGroup<any>({
-    'username': new FormControl(null),
+  this.signUpForm = new FormGroup({
+    'username': new FormControl(null, Validators.required),
     'email': new FormControl(null, [Validators.required, Validators.email]),
     'gender': new FormControl('male')
   })
@@ -915,3 +887,74 @@ this.signUpForm = new FormGroup({
 ```
 
 ### Dynamic form controls (`FormArray`)
+
+- On your formGroup, create a field with the constructor `new FormArray()`
+```ts
+  this.signupForm = new FormGroup({
+  ...
+  hobbies: new FormArray([]),
+})
+```
+- For adding an element, use the push method after casting the control as form array
+```ts
+onAddHobby() {
+  (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).push(new FormControl(null, Validators.required))
+}
+```
+- For getting information about those controls on the template, for a loop for example, use a getter
+```ts
+  getHobbiesControls() {
+  return (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).controls
+}
+```
+- On the template, give the container of those controls the `formArrayName`,which is the name of this `formArray` dynamic control, to let angular know where those controls will be
+  - Also, assign the index of those controls to the `formControlName`
+```angular2html
+<div formArrayName="hobbies">
+  <h3>Hobbies</h3>
+  <button class="btn btn-primary" type="button" (click)="onAddHobby()">Add a hobby</button>
+  <div class="form-group" *ngFor="let hobby of getHobbiesControls(); let controlIndex = index">
+    <input type="text" class="form-control" [formControlName]="controlIndex">
+  </div>
+</div>
+```
+
+## Custom validator `(there is also async validators)`
+
+- Create a functions that when the control value is invalid, return `{errorCode: true}`, and when it's valid, return null
+```ts
+  forbiddenNamesValidator(control: AbstractControl): ValidationErrors | null {
+
+  // for the case when the control has the forbidden name
+  // invalid control
+  if(this.forbiddenUserNames.includes(control.value)) {
+    return {'isForbiddenName': true}
+  }
+
+  // for the case when the control does not have the forbidden name
+  // valid control
+  return null
+}
+```
+- Add this validator function in the validators array of the form control
+```ts
+username: new FormControl<string | null>(null, [Validators.required, this.forbiddenNamesValidator.bind(this)])
+```
+- Use the validator state to show custom messages
+```angular2html
+<input
+        type="text"
+        id="username"
+        formControlName="username"
+        class="form-control">
+<span *ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
+      class="help-block">Enter a valid username</span>
+<span *ngIf="signUpForm.get('userdata.username').erros.isForbiddenName"
+      class="help-block">This name is forbidden</span>
+```
+
+### Observables `statusChanges` and `valueChanges`
+
+Listens to changes on a form or any other form control
+
+### `setValue` and `patchValue` also exist for reactive-forms
