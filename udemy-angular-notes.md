@@ -541,7 +541,7 @@ export class ServerResolverService implements Resolve<temp> {
 ```
 - In the route definition, add the resolve property
 ```ts
-{path: 'error', component: PageNotFoundComponent, title: 'Ops', data: {message: 'Page not found'}, resolve: {server: ServiceResolverService}}
+{path: 'error', component: PageNotFoundComponent, title: 'Ops', data: {message: 'Page not found'}, resolve: [ServiceResolverService]}
 ```
  - The dynamic data will be stored on the `resolver`
 - Read the data from the route, similarly to what is done with static data
@@ -609,7 +609,7 @@ ngOnInit() {
 }
 ```
 
-### Transforming observable data with `pipe`
+### Transforming observable data with `pipe` operator
 
 ```ts
 const transformedIntervalObserver =  customIntervalObserver.pipe(map(data => {
@@ -901,6 +901,18 @@ onAddHobby() {
   (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).push(new FormControl(null, Validators.required))
 }
 ```
+- For removing all, use `clear` method
+```ts
+onAddHobby() {
+  (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).clear()
+}
+```
+- For removing an element, use `removeAt` method
+```ts
+removeHobby() {
+  (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).removeAt(hobbyIndex)
+}
+```
 - For getting information about those controls on the template, for a loop for example, use a getter
 ```ts
   getHobbiesControls() {
@@ -958,3 +970,37 @@ username: new FormControl<string | null>(null, [Validators.required, this.forbid
 Listens to changes on a form or any other form control
 
 ### `setValue` and `patchValue` also exist for reactive-forms
+
+## Pipes
+
+Used for transforming output on the template (html file)
+
+### Create a pipe
+
+- create a class that implements `PipeTransform` and is decorated by the `Pipe` decorator
+  - The transform function takes in the value to be transformed and the pipe parameters
+- Add your pipe into the declaration module where it should be available
+
+```ts
+@Pipe({name: 'shorten'})
+export class ShortenPipe implements PipeTransform {
+  transform(value: string, limit = 10): string {
+    if (value.length > limit) {
+      return value.slice(0, limit) + ' ...'
+    }
+    return value
+  }
+}
+```
+
+#### Pure decorator property
+```ts
+@Pipe({name: 'sort', pure: false})
+```
+- When true, the pipe is pure, meaning that the transform() method is invoked only when its input arguments change. Pipes are pure by default.
+
+#### Standalone pipe property
+```ts
+@Pipe({name: 'sort', standalone: true})
+```
+- Angular pipes marked as standalone do not need to be declared in an NgModule
