@@ -72,25 +72,25 @@ If there is nothing in the trash, this directory does not exist
 ## Basic commands
 
 - `cat`
-    - -n for displaying the line numbers
+  - -n for displaying the line numbers
 - `less` for analyzing big files
-    - `SPACE` scroll down one full page
-    - `ENTER` scroll down one line
-    - `B` scroll up one full page
-    - `Y` scroll up one line
+  - `SPACE` scroll down one full page
+  - `ENTER` scroll down one line
+  - `B` scroll up one full page
+  - `Y` scroll up one line
 - `tail` and `head`
-    - -number for displaying the wanted lines
+  - -number for displaying the wanted lines
 - `mv` does two things
-    - move a file to a different location
-    - rename a file
+  - move a file to a different location
+  - rename a file
 - `wc` for the following information of a file checking
-    - number of lines
-    - number of words
-    - bytes
+  - number of lines
+  - number of words
+  - bytes
 - `mkdir` and `rmdir` for working with directories
-    - use -p for creating parent directories as well
-    - use `rm -rfi` for deleting `non-empty` directories
-        - -f force, -i interactively
+  - use -p for creating parent directories as well
+  - use `rm -rfi` for deleting `non-empty` directories
+    - `-f` force, `-i` interactively
 
 ## I/O Redirection
 
@@ -136,7 +136,7 @@ Use `>>` to add a content to a file
 command1 | command2 | command3
 ```
 
-## Fiding files
+## Finding files
 
 ### `find`
 
@@ -166,7 +166,7 @@ To find and remove all files that end with .swp:
 `find -name "*.swp" -exec rm {} ’;’`
 
 - `-exec <command>`
-    - command to executed on all files that the `find` found
+  - command to executed on all files that the `find` found
 - `{}` a placeholder for the founded files
 - `’;’` obligatory, indicates the end of the command
 
@@ -212,10 +212,10 @@ To terminate a process, you can type
 ## User environment
 
 - whoami
-    - list current user
+  - list current user
 - who
-    - list logged on users
-    - `-a` print more info about those users
+  - list logged on users
+  - `-a` print more info about those users
 
 ## Order of startup files
 
@@ -236,7 +236,7 @@ file named ~/.bashrc file is read and evaluated
 ## Environment variables
 
 - `type set, env, or export to see them`
-    - env print what you want
+  - env print what you want
 
 By default, variables created within a script are only available to the current shell; child processes (sub-shells) will
 not have access to values that have been set or modified. Allowing child processes to see the values requires use of
@@ -346,15 +346,12 @@ It is often used to read and print files, as well as for simply viewing file con
 However, the main purpose of cat is often to combine (concatenate) multiple files together
 
 | Command | Usage |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --- | ---------------------------------------------------------------- |
-| cat file1 file2 | Concatenate multiple files and display the output; i.e. the entire | | content of the first file is
-followed by that of the second file |
+| ------------------------- | --------- |
+| cat file1 file2 | Concatenate multiple files and display the output; <br> i.e. the entire content of the first file is followed by that of the second file |
 | cat file1 file2 > newfile | Combine multiple files and save the output into a new file |
 | cat file >> existingfile | Append a file to the end of an existing file |
-| `cat > file`              | Any subsequent lines typed will go into the file, `until CTRL-D` is typed <br> If the file
-does not exist, it creates the file |
-| `cat >> file`             | Any subsequent lines are appended to the file, `until CTRL-D` is typed <br> If the file
-does not exist, it creates the file |
+| `cat > file`              | Any subsequent lines typed will go into the file, `until CTRL-D` is typed <br> If the file does not exist, it creates the file |
+| `cat >> file`             | Any subsequent lines are appended to the file, `until CTRL-D` is typed <br> If the file does not exist, it creates the file |
 
 ### cat interactively (`prefer echo` for single line input)
 
@@ -369,7 +366,7 @@ does not exist, it creates the file |
 - `echo string > newfile`
 - `echo string >> newfile`
 
-## Reading files on IDEs is expensive!
+## Reading files on IDEs is expensive
 
 For example, a system might maintain one simple large log file to record details of all system warnings and errors. (
 Modern systems tend to have more fine-grained logging facilities but still may have some large logging files.) Due to a
@@ -549,7 +546,7 @@ else
 
 #### Table: Boolean for files
 
-| Condition | Meaning                                                                                          |                                                               
+| Condition |Meaning                                                                                          |
 |-----------|--------------------------------------------------------------------------------------------------|
 | `-e` file | Checks if the file `exists`                                                                      |
 | `-d` file | Checks if the file `is a directory`                                                              |
