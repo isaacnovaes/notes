@@ -486,13 +486,21 @@ path: ':id'
 
 ### Route guarding
 
-- Write a class (normally a service) that implements `CanActivate`
+- Write a ***Service*** that implements `CanActivate`
 - Then, the function `canActivate` will later guard the route
-  
+
 ```ts
+import {Injectable} from "@angular/core";
+
 type CanActivateReturnUnit = boolean | UrlTree
 
-canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit 
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+.
+.
+.  
+canActivate(route: ActivatedRouteSnapshot, state:RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit
+
 ```
 
 - Add your route guards to the array `canActivate` from the defined route
@@ -1161,3 +1169,59 @@ export class ShortenPipe implements PipeTransform {
 
 ## Dynamic components
   
+### Old way
+
+```ts
+private showAlertComponent(errorMessage: string | null): void {
+    if (!errorMessage) return;
+
+    const componentFactory =
+        this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const alertComponent =
+        hostViewContainerRef.createComponent(componentFactory);
+
+    alertComponent.instance.message = this.pipeError.transform(errorMessage);
+    alertComponent.instance.close.pipe(take(1)).subscribe(() => {
+    hostViewContainerRef.clear();
+});
+}
+```
+
+### For new way, check docs
+
+## Modules
+
+- CommonModule is the equivalent of BrowserModule
+  - Use it for other modules, except the main module, where BrowserModule should be used
+- Export `(add to the export array from a module)` only what you plan to use externally in other module
+- For routing modules, use `forChild` in the newly created routing module
+
+```ts
+imports: [RouterModule.forChild(routes)]
+```
+
+- You can declare something in the `declarations` only once
+- Module types
+  - feature modules 
+  - shared modules
+    - Avoid providing services in shared modules, it can cause bugs hard to debug, because it creates a new instance of the imported service
+  - core module
+
+### Lazy loading
+
+- Remove module from imports of main module, like app module
+  - The imports in the `imports` are eagerly imported, not lazily
+- In the main module routes, declare the module to be lazily imported, like so
+```ts
+{
+    path: 'recipes',
+    loadChildren: () =>
+      import('./recipe/recipe.module').then((module) => module.RecipeModule),
+}
+```
+- Start the routes in the lazily imported module as an empty route
+  - Because you already declared it in the main module route
