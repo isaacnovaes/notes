@@ -191,4 +191,3 @@ How it works:
   - The Computed pane lists property values calculated at runtime in pale text (grayed out)
 
 ## Console panel
-

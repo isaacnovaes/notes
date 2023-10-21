@@ -592,8 +592,8 @@ echo $((x+1))
 
 - `;` execute each command sequentially
 - `&&` execute each command sequentially
-    - If a command fails, the next ones are aborted
+  - If a command fails, the next ones are aborted
 - `||` execute each command sequentially
-    - If a command succeeds, the next ones are aborted
+  - If a command succeeds, the next ones are aborted
 
 `Chapter 15: The Bash Shell and Basic Scripting / Constructs`
