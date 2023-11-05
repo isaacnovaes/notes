@@ -48,6 +48,14 @@ or `(eventName)='myFunc($event)` => for capturing event information
 
 ## Directives are instructions in the DOM
 
+A directive can provide insight into a DOM object that you cannot change directly.
+
+You can't access the implementation of a built-in `<div>`, or modify a third party component.
+
+`You do have the option to watch these elements with a directive`
+
+`You can extend a component with a directive (extends DirectiveName) or use it directly on a component selector markup as a property ([directiveSelector])`
+
 ```ts
 @Directive({
 selector: '[appTurnGreen]'
@@ -195,9 +203,11 @@ E.g.: the styles that a component has is scoped to this component (not applied t
   <input type="text" class="form-control" #serverNameInput>
   <span>{{serverNameInput.value}}</span>
   <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+  <on-changes [hero]="hero" [power]="power"></on-changes>
   ```
 
 - Doing the same thing from ts code side, do the following:
+- `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterViewInit()`
   
   ```ts
   @ViewChild('serverNameInput') serverContentInput: ElementRef<HTMLInputElement>;
@@ -209,6 +219,12 @@ E.g.: the styles that a component has is scoped to this component (not applied t
   ```ts
   @ViewChild('serverNameInput', {static: true}) serverContentInput: ElementRef<HTMLInputElement>;
   ```
+
+  - `You can pass a reference from html, like 'serverNameInput', or a reference to a component used on the view`
+  
+```ts
+    @ViewChild(OnChangesComponent) childView!: OnChangesComponent;
+```
 
 ## Render children inside component
 
@@ -223,12 +239,15 @@ While using the component, just pass in the children inside the component
 ```
 
 - For accessing an element (via ref) which is passed as content (`children`), use `@ContentChild`
+- `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterContentInit()`
   
 ```ts
  @ContentChild('paragraphElement', {static: true}) paragraph: ElementRef<HTMLParagraphElement>
 ```
 
 ## Component lifecycle
+
+After your application instantiates a component or directive by calling its constructor, Angular calls the hook methods you have implemented at the appropriate point in the lifecycle of that instance in the following sequence
 
 ### `ngOnChanges()`
 
@@ -238,51 +257,61 @@ While using the component, just pass in the children inside the component
   change
 - If your component has no inputs, or you use it without providing any inputs, the framework will not call ngOnChanges()
 - The method receives a `SimpleChanges` object of current and previous property values
+- `This happens frequently, so any operation you perform here impacts performance significantly`
+- Be careful while using objects as data-biding inputs. The change is assigned to the object reference, not the object value(s). So if only a property from the object changes, `ngOnChanges` will not fire, because the object reference did not change
 
 ### `ngOnInit()`
 
 #### Initialize the directive or component after Angular first displays the data-bound properties (here data-bound properties are ready to use) and sets the directive or component's input properties
 
 - Called once, after the first ngOnChanges(). ngOnInit() is still called even when ngOnChanges() is not (which is the case when there are no template-bound inputs).
-- Runs after the constructor
-- References may not be available, because it has not been rendered yet
+- References may not be available, because the component's view has not been rendered yet
 
 ### `ngOnDoCheck()`
 
 #### Detect and act upon changes that Angular can't or won't detect on its own
 
-- Run immediately after ngOnInit() on the first run, then called immediately after ngOnChanges() on every change detection run.
+- Run immediately after ngOnInit() on the first run, then called immediately after ngOnChanges() on every change detection run anywhere on the page.
+- `Beware! Called frequently!`
 
 ### `ngAfterContentInit()`
 
-#### Respond after Angular projects external content `children` into the component's view, or into the view that a directive is in
+#### Respond after Angular projects external content `children, <ng-content></ng-content>` projected into the component's view, or into the view that a directive is in
 
 - Called **once** after the first ngDoCheck()
 
 ### `ngAfterContentChecked()`
 
-#### Respond after Angular checks the content projected `children` into the directive or component
+#### Respond after Angular checks the content `children, <ng-content></ng-content>` projected  into the component's view, or into the view that a directive is in
 
 - Called after ngAfterContentInit() and every subsequent ngDoCheck()
+- `Beware! Called frequently!`
 
 ### `ngAfterViewInit()`
 
-#### Respond after Angular initializes the component's views and child views, or the view that contains the directive
+#### Respond after Angular initializes the component's views and child views `(components or HTML elements used inside component's view)`, or the view that contains the directive
 
 - Called once after the first ngAfterContentChecked()
-- References are available
+- `References are available`
 
 ### `ngAfterViewChecked()`
 
-#### Respond after Angular checks the component's views and child views, or the view that contains the directive
+#### Respond after Angular checks the component's views and child views `(components or HTML elements used inside component's view)`, or the view that contains the directive
 
 - Called after the ngAfterViewInit() and every subsequent ngAfterContentChecked()
+- `Beware! Called frequently!`
 
 ### `ngOnDestroy()`
 
 #### Cleanup just before Angular destroys the directive or component. Unsubscribe Observables and detach event handlers to avoid memory leaks
 
-- Called immediately before Angular destroys the directive or component
+- Called immediately `before` Angular destroys the directive or component
+
+#### DestroyRef
+
+In addition to ngOnDestroy(), you can inject Angular's DestroyRef and register callback functions to be called when the enclosing context is destroyed. This can be useful for building reusable utilities that require cleanup.
+
+If DestroyRef is injected in a component or directive, the callbacks run when that component or directive is destroyed. Otherwise the callbacks run when a corresponding injector is destroyed
 
 ## Services
 
