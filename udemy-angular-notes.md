@@ -198,20 +198,20 @@ E.g.: the styles that a component has is scoped to this component (not applied t
 ## Element reference (local reference)
 
 - Only available inside html, but you can pass data via events to the ts code
+  - You can access all component properties and methods
   
-  ```html
-  <input type="text" class="form-control" #serverNameInput>
-  <span>{{serverNameInput.value}}</span>
-  <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
-  <on-changes [hero]="hero" [power]="power"></on-changes>
-  ```
+    ```html
+    <input type="text" class="form-control" #serverNameInput>
+    <span>{{serverNameInput.value}}</span>
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <on-changes [hero]="hero" [power]="power"></on-changes>
+    ```
 
 - Doing the same thing from ts code side, do the following:
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterViewInit()`
   
   ```ts
   @ViewChild('serverNameInput') serverContentInput: ElementRef<HTMLInputElement>;
-  //Use it as your last resort! 
   ```
 
   - In case you want to access it inside ngOnInit(), use `{static: true}`
@@ -221,6 +221,12 @@ E.g.: the styles that a component has is scoped to this component (not applied t
   ```
 
   - `You can pass a reference from html, like 'serverNameInput', or a reference to a component used on the view`
+  - Prevent error like the following, by wrapping a peace of logic inside a `setTimeout` with a tick of `0`
+  - Reference: <https://angular.io/guide/component-interaction#parent-calls-an-viewchild>
+
+```ts
+NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
+```
   
 ```ts
     @ViewChild(OnChangesComponent) childView!: OnChangesComponent;
@@ -230,6 +236,8 @@ E.g.: the styles that a component has is scoped to this component (not applied t
 
 In the component template, place `<ng-content></ng-content>` marking where you want to add children.
 
+### Single-slot projection
+
 While using the component, just pass in the children inside the component
 
 ```html
@@ -237,6 +245,45 @@ While using the component, just pass in the children inside the component
     <p #paragraphElement>hello</p>
 </app-server-element>
 ```
+
+### Multi-slot projection
+
+A component can have multiple slots. Each slot can specify a CSS selector that determines which content goes into that slot
+
+- Add a select attribute to the `<ng-content>` elements. Angular supports selectors for any combination of tag name, attribute, directive, CSS class, and the :not pseudo-class
+  
+```html
+<h2>Multi-slot content projection</h2>
+
+Default:
+  <ng-content></ng-content>
+
+Question:
+  <ng-content select="[question]"></ng-content>
+```
+
+```html
+<app-zippy-multislot>
+  <p question>
+    Is content projection cool?
+  </p>
+  <p>Let's learn about content projection!</p>
+</app-zippy-multislot>
+```
+
+### Conditional content projection
+
+Check `ngTemplateOutlet` at <https://angular.io/guide/content-projection#conditional-content-projection>
+
+If your component needs to conditionally render content, or render content multiple times, you should configure that component to accept an `<ng-template>` element that contains the content you want to conditionally render
+
+If your component includes an `<ng-content>` element without a select attribute, that instance receives all projected components that do not match any of the other `<ng-content>` elements
+
+Using an `<ng-content>` element in these cases is not recommended, because when the consumer of a component supplies the content, that content is always initialized, even if the component does not define an `<ng-content>` element or if that `<ng-content>` element is inside of an `ngIf` statement
+
+`With an <ng-template> element, you can have your component explicitly render content based on any condition you want, as many times as you want. Angular will not initialize the content of an <ng-template> element until that element is explicitly rendered`
+
+### Access the ref
 
 - For accessing an element (via ref) which is passed as content (`children`), use `@ContentChild`
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterContentInit()`
@@ -348,7 +395,7 @@ If DestroyRef is injected in a component or directive, the callbacks run when th
  selectedRecipe = new EventEmitter<Recipe>()
 ```
 
-- where the value is generated, emit an event 
+- where the value is generated, emit an event
   
 ```ts
  this.recipeService.selectedRecipe.emit(recipe)
@@ -629,7 +676,7 @@ canDeactivate(): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUn
 {path: 'error', component: PageNotFoundComponent, title: 'Ops', data: {message: 'Page not found'}}
 ```
 
-- Access the data from the route (`ActivatedRoute`) 
+- Access the data from the route (`ActivatedRoute`)
   
 ```ts
 this.route.snapshot.data.message
@@ -849,7 +896,7 @@ Works jointly with the validators:
   static composeAsync(validators: AsyncValidatorFn[]): AsyncValidatorFn | null
 ```
 
-Take advantage of the following dynamically applied css classes: 
+Take advantage of the following dynamically applied css classes:
 
 - ng-valid
 - ng-invalid
@@ -1220,7 +1267,9 @@ private showAlertComponent(errorMessage: string | null): void {
 }
 ```
 
-### For new way, check docs
+### New way
+
+Check `NgComponentOutlet` at <https://angular.io/guide/dynamic-component-loader>
 
 ## Modules
 
@@ -1235,7 +1284,7 @@ imports: [RouterModule.forChild(routes)]
 
 - You can declare something in the `declarations` only once
 - Module types
-  - feature modules 
+  - feature modules
   - shared modules
     - Avoid providing services in shared modules, it can cause bugs hard to debug, because it creates a new instance of the imported service
   - core module
@@ -1245,6 +1294,7 @@ imports: [RouterModule.forChild(routes)]
 - Remove module from imports of main module, like app module
   - The imports in the `imports` are eagerly imported, not lazily
 - In the main module routes, declare the module to be lazily imported, like so
+  
 ```ts
 {
     path: 'recipes',
@@ -1252,5 +1302,7 @@ imports: [RouterModule.forChild(routes)]
       import('./recipe/recipe.module').then((module) => module.RecipeModule),
 }
 ```
+
 - Start the routes in the lazily imported module as an empty route
   - Because you already declared it in the main module route
+  
