@@ -163,14 +163,15 @@ Searching only for regular files named gcc:
 
 To find and remove all files that end with .swp:
 
-`find -name "*.swp" -exec rm {} ’;’`
+`find -name "*.swp" -exec rm {} +`
 
 - `-exec <command>`
   - command to executed on all files that the `find` found
 - `{}` a placeholder for the founded files
-- `’;’` obligatory, indicates the end of the command
+- `+` obligatory, indicates the end of the command
 
 Using `-ok` instead of `-exec` to prompt for permission to execute the command
+
 Good for testing the command first
 
 ### `locate` same as `find`, but you need to update the fsdb

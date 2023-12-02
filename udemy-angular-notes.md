@@ -30,21 +30,32 @@ Angular 2 (2016) ... => Angular
 
 - ***string interpolation*** `{{data}}`
   - should return something that can be converted to a string
-- ***property biding*** (HTML element properties) `[property]="data"` (one-way biding)
+- ***property biding*** (HTML element properties) `[property]="expression"` (one-way biding)
   - change ts code variable value triggers an update on html, but html update doesn't update ts code variable value
+- ***attribute biding*** (HTML element attributes) `[attr.attribute-you-are-targeting]="expression"`
+  - Here, `attr.` is constant
+  
+```html
+[attr.aria-label]="actionName"
+```
   
 ## html => ts code
 
 - ***event biding*** `(event)="expression"`
 or `(eventName)='myFunc($event)` => for capturing event information
   - React to events
+  - For keyboard events, ALWAYS check <https://angular.io/guide/event-binding#binding-to-keyboard-events>
   
 ## html <=> ts code
 
 ### Combination of output data and reacting to user events
 
-- ***two-way-biding*** `[(ngModel)]="data"`
+- ***two-way-biding*** `[(property)]="expression"`
   - an update in html triggers an update in ts code and vice-versa
+  - use the pattern `property` for @Input and `propertyChange` for @Output
+  - Whenever you update the property, emit an event with this updated value
+  - Then Angular will set the emitted value to the `property`
+  - See <https://angular.io/guide/two-way-binding> for more info
 
 ## Directives are instructions in the DOM
 
@@ -1306,3 +1317,10 @@ imports: [RouterModule.forChild(routes)]
 - Start the routes in the lazily imported module as an empty route
   - Because you already declared it in the main module route
   
+## Unidirectional data flow
+
+A data flow model where the component tree is always checked for changes in one direction from parent to child, which prevents cycles in the change detection graph.
+
+In practice, this means that data in Angular flows downward during change detection. A parent component can easily change values in its child components because the parent is checked first. A failure could occur, however, if a child component tries to change a value in its parent during change detection (inverting the expected data flow), because the parent component has already been rendered. In development mode, Angular throws the `ExpressionChangedAfterItHasBeenCheckedError` error if your application attempts to do this, rather than silently failing to render the new value.
+
+To avoid this error, a lifecycle hook method that seeks to make such a change should trigger a new change detection run. The new run follows the same direction as before, but succeeds in picking up the new value
