@@ -57,7 +57,17 @@ or `(eventName)='myFunc($event)` => for capturing event information
   - Then Angular will set the emitted value to the `property`
   - See <https://angular.io/guide/two-way-binding> for more info
 
-## Directives are instructions in the DOM
+## Directives
+
+Directives are classes that add additional behavior to elements in your Angular applications
+
+3 types
+
+- Attribute
+  - Change the appearance or behavior of an element, component, or another directive.
+- Structural
+  - Change the DOM layout by adding and removing DOM elements.
+- Components
 
 A directive can provide insight into a DOM object that you cannot change directly.
 
@@ -76,6 +86,8 @@ export class BetterHighlightDirective implements OnInit {
   constructor(private renderer: Renderer2, private elementRef: ElementRef) { }
   // USE RENDERER FOR ANY DOM MANIPULATION
   // FOR SIMPLE DOM MANIPULATION, USE HOSTING BIDING
+
+  // ElementRef grants direct access to the host DOM element through its nativeElement property
   ngOnInit(): void {
     this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'green')
   }
@@ -97,7 +109,8 @@ export class BetterHighlightDirective implements OnInit {
 ### Biding to component properties
 
 ```ts
-  @HostBiding('style.backgroundColor') backgroundColor: string = 'transparent';
+  @HostBiding('style.backgroundColor') 
+  backgroundColor: string = 'transparent';
 
   @HostListener("mouseenter", ['$event']) 
   onMouseover(event: MouseEvent) {
@@ -110,7 +123,7 @@ export class BetterHighlightDirective implements OnInit {
   }
 ```
 
-### listening to enter key keydown event
+### listening to enter-key keydown event
 
 ```ts
 @HostListener('window:keydown.enter', ['$event'])
@@ -123,9 +136,41 @@ export class BetterHighlightDirective implements OnInit {
 <p appTurnGreen>Receive a green background</p>
 ```
 
-## You can use directives without square brackets, but pay attention that it's not a normal property
+### Passing value to directives
 
-- By doing this, you don't need to use `"'value'"` when passing in directives
+- Add an appHighlight `@Input()` property
+- When using the directive, pass in a value as if it were a property
+
+```ts
+@Directive({
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) {}
+
+  @Input() defaultColor = '';
+
+  @Input() appHighlight = '';
+
+  @HostListener('mouseenter') 
+  onMouseEnter() {
+    this.highlight(this.appHighlight || this.defaultColor || 'red');
+  }
+
+  @HostListener('mouseleave') 
+  onMouseLeave() {
+    this.highlight('');
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+```
+
+```html
+<p [appHighlight]="color" defaultColor="violet"></p>
+```
 
 ## Structural directives
 
@@ -176,6 +221,36 @@ export class BetterHighlightDirective implements OnInit {
 </ng-container>
 ```
 
+### Creating structural directives
+
+```ts
+@Directive({
+  selector: '[appUnless]',
+})
+export class UnlessDirective {
+  private hasView = false;
+
+  constructor(
+    private templateRef: TemplateRef<unknown>,
+    private viewContainer: ViewContainerRef,
+  ) {}
+
+  @Input() set appUnless(condition: boolean) {
+    if (!condition && !this.hasView) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.hasView = true;
+    } else if (condition && this.hasView) {
+      this.viewContainer.clear();
+      this.hasView = false;
+    }
+  }
+}
+```
+
+```html
+<p *appUnless="condition">Show this sentence unless the condition is true.</p>
+```
+
 ## Attribute directives
 
 ### Change the appearance or behavior of an element, component, or another directive
@@ -222,13 +297,15 @@ E.g.: the styles that a component has is scoped to this component (not applied t
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterViewInit()`
   
   ```ts
-  @ViewChild('serverNameInput') serverContentInput: ElementRef<HTMLInputElement>;
+  @ViewChild('serverNameInput') 
+  serverContentInput: ElementRef<HTMLInputElement>;
   ```
 
   - In case you want to access it inside ngOnInit(), use `{static: true}`
   
   ```ts
-  @ViewChild('serverNameInput', {static: true}) serverContentInput: ElementRef<HTMLInputElement>;
+  @ViewChild('serverNameInput', {static: true}) 
+  serverContentInput: ElementRef<HTMLInputElement>;
   ```
 
   - `You can pass a reference from html, like 'serverNameInput', or a reference to a component used on the view`
@@ -240,7 +317,8 @@ NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed afte
 ```
   
 ```ts
-    @ViewChild(OnChangesComponent) childView!: OnChangesComponent;
+    @ViewChild(OnChangesComponent) 
+    childView!: OnChangesComponent;
 ```
 
 ## Render children inside component
@@ -300,7 +378,8 @@ Using an `<ng-content>` element in these cases is not recommended, because when 
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterContentInit()`
   
 ```ts
- @ContentChild('paragraphElement', {static: true}) paragraph: ElementRef<HTMLParagraphElement>
+ @ContentChild('paragraphElement', {static: true}) 
+ paragraph: ElementRef<HTMLParagraphElement>
 ```
 
 ## Component lifecycle
@@ -386,7 +465,7 @@ If DestroyRef is injected in a component or directive, the callbacks run when th
 - Create a getter function on the service class and return a copy of the private service value
 - If you return the value itself, any change made on it will reflect the service value
 
-### Hierarchy
+## Hierarchy
 
 - service provided at `AppModule` (`@NgModel`)
   - available app-wide and for other services
@@ -398,7 +477,57 @@ If DestroyRef is injected in a component or directive, the callbacks run when th
 
 - If you provide the service to a child, it will overwrite the service of the parent
 
-### ~~Subscribing to service value changes~~ <mark>USE SUBJECT INSTEAD</mark>
+## Types of injectors
+
+- `NullInjector()`
+  - Top of the tree
+  - Returns error unless `@Optional() is used`
+- `EnvironmentInjector`
+- `ElementInjector()`
+  - Angular creates ElementInjector hierarchies implicitly for each DOM element.
+
+
+When the component instance is destroyed, so is that service instance
+
+When you configure a provider for a component or directive using the providers property, that provider belongs to the ElementInjector of that component or directive. 
+
+Components and directives on the same element share an injector.
+
+## Resolution rules
+
+When a component declares a dependency, Angular tries to satisfy that dependency with its own `ElementInjector`. 
+
+If the component's injector lacks the provider, it passes the request up to its parent component's `ElementInjector`
+
+If Angular doesn't find the provider in any `ElementInjector hierarchies, it goes back to the element where the request originated and looks in the EnvironmentInjector` hierarchy, starting from `ModuleInjector` (the service itself). 
+
+If Angular still doesn't find the provider, it throws an error `unless @Optional is provided`
+
+## Resolution modifiers
+
+@Optional(), @Self(), @SkipSelf() and @Host()
+
+Resolution modifiers fall into three categories:
+
+- What to do if Angular doesn't find what you're looking for, that is `@Optional()`
+- Where to `start looking`, that is `@SkipSelf()`
+- Where to `stop looking`, `@Host()` and `@Self()`
+
+### `@Self()`
+
+Use `@Self()` so that Angular will only look at the `ElementInjector` (host) for the current component or directive
+
+### `@SkipSelf()`
+
+`@SkipSelf()` is the opposite of `@Self()`. With `@SkipSelf()`, Angular starts its search for a service in `the parent ElementInjector`, rather than in the current one
+
+### `@Host()`
+
+`@Host()` lets you designate a component as the last stop in the injector tree when searching for providers.
+
+It doesn't even go to `ModuleInjector`
+
+## ~~Subscribing to service value changes~~ <mark>USE SUBJECT INSTEAD</mark>
 
 - on the service, declare the value as an event emitter
   
@@ -440,7 +569,7 @@ const appRoutes: Routes = [
 - When clicking on a link, the default behavior is to reload the page with the new html coming from the server
   - It destroys the app state
 - Instead, use the `routerLink="/first-component"`
-  - Or `routerLink="['/first-component',userName, userId, {details: true}]"` to generate `/first-component/userName/userId;details=true`
+  - Or `routerLink="['/first-component',userName, userId, {details: true}]"` to generate: <br> `/first-component/userName/userId;details=true`
 - ***use slash for routes***
 
 #### Style active link
@@ -474,7 +603,7 @@ constructor(private router: Router){}
 - Use the `navigate` method
   
 ```ts
-onLoad(){
+onLoad() {
     this.router.navigate(['/servers'])
 }
 ```
@@ -506,8 +635,8 @@ const appRoutes: Routes = [
   - Use `this.route.params` observable for getting the up-to-data route params for cases when the component is reload within itself
   
 ```ts
-  // if the route reloads with different params, it doesn't run again
-  // for getting the up-to-date params, use this.route.params observable
+  // if the route reloads with different params, this.route.params doesn't run again
+  // for getting the up-to-date params, subscribe to this.route.params
   const params = this.route.snapshot.params; 
   this.user = {id: params['id'], name: params['name']}
 ```
@@ -711,7 +840,7 @@ this.route.subscribe((data: Data) => {
 ```ts
 type temp = { name: string }
 
-export class ServerResolverService implements Resolve<temp> {
+export class ServerResolverService implements Resolver<temp> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<temp> | Promise<temp> | temp {
     
   }
@@ -1324,3 +1453,79 @@ A data flow model where the component tree is always checked for changes in one 
 In practice, this means that data in Angular flows downward during change detection. A parent component can easily change values in its child components because the parent is checked first. A failure could occur, however, if a child component tries to change a value in its parent during change detection (inverting the expected data flow), because the parent component has already been rendered. In development mode, Angular throws the `ExpressionChangedAfterItHasBeenCheckedError` error if your application attempts to do this, rather than silently failing to render the new value.
 
 To avoid this error, a lifecycle hook method that seeks to make such a change should trigger a new change detection run. The new run follows the same direction as before, but succeeds in picking up the new value
+
+## Dependency injection
+
+### `useClass`
+
+The useClass provider key lets you create and return a new instance of the specified class 
+
+You can use this type of provider to substitute an alternative implementation for a common or default class
+
+In the following example, the BetterLogger class would be instantiated when the Logger dependency is requested in a component or any other class
+
+```ts
+[{ provide: Logger, useClass: BetterLogger }]
+``` 
+
+If the alternative class providers have their own dependencies, specify both providers in the providers metadata property of the parent module or component
+
+```ts
+[ UserService,  { provide: Logger, useClass: EvenBetterLogger }]
+```
+
+```ts
+@Injectable()
+export class EvenBetterLogger extends Logger {
+    
+  constructor(private userService: UserService) { super(); }
+
+  override log(message: string) {
+    const name = this.userService.user.name;
+    super.log(`Message to ${name}: ${message}`);
+  }
+}
+```
+
+### `useExisting`
+
+The useExisting provider key lets you map one token to another
+
+In effect, the first token is an alias for the service associated with the second token, creating two ways to access the same service object
+
+In the following example, the injector injects the singleton instance of NewLogger when the component asks for either the new or the old logger. 
+
+In this way, OldLogger is an alias for NewLogger
+
+```ts
+[ NewLogger,
+  // Alias OldLogger w/ reference to NewLogger
+  { provide: OldLogger, useExisting: NewLogger}]
+```
+
+### `useFactory`
+
+Build factories
+
+### `useValue`
+
+Provide configs, feature flags, etc.
+
+### Using an `InjectionToken` object
+
+```ts
+import { InjectionToken } from '@angular/core';
+
+export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
+```
+
+```ts
+providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }]
+```
+
+```ts
+constructor(@Inject(APP_CONFIG) 
+            config: AppConfig) {
+  this.title = config.title;
+}
+```
