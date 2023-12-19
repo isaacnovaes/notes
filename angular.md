@@ -564,6 +564,25 @@ const appRoutes: Routes = [
 - At the imports, add `RouterModule.forRoot(appRoutes)`
 - At `app.template.html` add the directive `<router-outlet></router-outlet>`
 
+### New way
+
+- Add the following to the providers array:
+
+```ts
+provideRouter(routes, withComponentInputBinding())
+```
+
+- `withComponentInputBinding()` makes it possible to bind inputs to any route data: static or resolved route data, path parameters, matrix parameters, and query parameters
+  - `If you want to use the parent components route info you will need to set the router paramsInheritanceStrategy option: withRouterConfig({paramsInheritanceStrategy: 'always'})`
+
+### Route path wildcards
+
+- `**` represents any route
+  - use it as the last route, because Angular uses a first-match wins strategy when matching routes
+  - Normally used for `Page not fould` component
+- `''`
+  - Normally, you would use ti with a redirectTo property
+
 ### Linking
 
 - When clicking on a link, the default behavior is to reload the page with the new html coming from the server
@@ -592,9 +611,35 @@ const appRoutes: Routes = [
 - Use slashes
 - Always refer to the domain, even for children routes
 
+### Setting static/dynamic page title
+
+Each page in your application should have a unique title so that they can be identified in the browser history
+
+#### Static
+
+- For static, just set it in the route definition by using the title property
+
+#### Dynamic
+
+- Use the `ReseolveFn<T>` function
+- Pass this function to the title property in the route definition
+
+```ts
+{
+  path: 'child-a',  // child route path
+  title: resolvedChildATitle,
+  component: ChildAComponent,  // child route component that the router renders
+}
+.
+.
+.
+// defined somewhere in your application, or even inside a service
+const resolvedChildATitle: ResolveFn<string> = () => this.titleService.buildTitle();
+```
+
 ### Programmatically navigation
 
-- declare the `route` variable
+- declare the `router` variable
   
 ```ts
 constructor(private router: Router){}
@@ -688,7 +733,7 @@ path: ':id'
 ```
 
 - place `<router-outlet></router-outlet>` in the parent
-  - The components will be rendered here
+  - The components will be rendered next ti it
 
 ### Preserving params when navigating programmatically
 
@@ -787,7 +832,7 @@ export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeac
   
 ```ts
  {
-  path: ':id/edit',
+          path: ':id/edit',
           component: EditServerComponent,
           title: 'Edit Server',
           canDeactivate: [CanDeactivateGuardService]
