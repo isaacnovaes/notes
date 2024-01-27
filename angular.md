@@ -495,11 +495,11 @@ Components and directives on the same element share an injector.
 
 ## Resolution rules
 
-When a component declares a dependency, Angular tries to satisfy that dependency with its own `ElementInjector`. 
+When a component declares a dependency, Angular tries to satisfy that dependency with its own `ElementInjector`.
 
 If the component's injector lacks the provider, it passes the request up to its parent component's `ElementInjector`
 
-If Angular doesn't find the provider in any `ElementInjector hierarchies, it goes back to the element where the request originated and looks in the EnvironmentInjector` hierarchy, starting from `ModuleInjector` (the service itself). 
+If Angular doesn't find the provider in any `ElementInjector hierarchies, it goes back to the element where the request originated and looks in the EnvironmentInjector` hierarchy, starting from `ModuleInjector` (the service itself).
 
 If Angular still doesn't find the provider, it throws an error `unless @Optional is provided`
 
@@ -564,6 +564,14 @@ const appRoutes: Routes = [
 - At the imports, add `RouterModule.forRoot(appRoutes)`
 - At `app.template.html` add the directive `<router-outlet></router-outlet>`
 
+### Route order
+
+The order of routes is important because the Router uses a first-match wins strategy when matching routes, so more specific routes should be placed above less specific routes 
+
+List routes with a static path first, followed by an empty path route, which matches the default route 
+
+The wildcard route comes last because it matches every URL and the Router selects it only if no other routes match first
+
 ### New way
 
 - Add the following to the providers array:
@@ -579,7 +587,7 @@ provideRouter(routes, withComponentInputBinding())
 
 - `**` represents any route
   - use it as the last route, because Angular uses a first-match wins strategy when matching routes
-  - Normally used for `Page not fould` component
+  - Normally used for `Page not found` component
 - `''`
   - Normally, you would use ti with a redirectTo property
 
@@ -597,6 +605,7 @@ provideRouter(routes, withComponentInputBinding())
 - use the `[routerLinkActiveOptions]` to pass an object for configuring the linking style
   - the component will receive the `routerLinkActive` css class if the url contains the link redirects to
   - add `exact: true` to only use the css class when the route exactly matches the url
+- use `ariaCurrentWhenActive="page"` for accessibility purposes
 
 ### Relative vs Absolute paths
 
@@ -621,7 +630,7 @@ Each page in your application should have a unique title so that they can be ide
 
 #### Dynamic
 
-- Use the `ReseolveFn<T>` function
+- Use the `ResolverFn<T>` function
 - Pass this function to the title property in the route definition
 
 ```ts
@@ -677,19 +686,24 @@ const appRoutes: Routes = [
 
 - At the component, access route information with the `ActivatedRoute`
   - Use `this.route.snapshot` for routes that won't reload providing new data
-  - Use `this.route.params` observable for getting the up-to-data route params for cases when the component is reload within itself
+  - Use `this.route.paramMap` observable for getting the up-to-data route params for cases when the component is reload within itself with new data
   
 ```ts
   // if the route reloads with different params, this.route.params doesn't run again
   // for getting the up-to-date params, subscribe to this.route.params
-  const params = this.route.snapshot.params; 
-  this.user = {id: params['id'], name: params['name']}
+  const paramMap = this.route.snapshot.paramMap; 
+  this.user = {id: paramMap.get('id'), name: paramMap.get('name')}
 ```
 
 ```ts
     // Always use the up-to-date data
-    params.subscribe((newParam)=>{
-      this.user = {id: newParam['id'], name: newParam['name']}
+    // Use switch map for cancelling previous request (concurrent request issue)
+    this.route.paramMap.pipe(switchMap(params => {
+        const id = params.get('id');
+        const name = params.get('name')
+        return {id, name}
+    })).subscribe((newParam)=>{
+      this.user = {id: newParam.id, name: newParam.name}
     })
 ```
 
@@ -718,8 +732,12 @@ or
 - To access the query params
   
 ```ts
-  this.route.snapshot.queryParams
+  this.route.snapshot.queryParamMap
 ```
+
+### Route params or queryParams
+
+In general, use a required route parameter when the value is mandatory (for example, if necessary to distinguish one route path from another); and an optional parameter when the value is optional, complex, and/or multivariate
 
 ### Nested routes
 
@@ -746,6 +764,30 @@ path: ':id'
 ```
 
 ### Route guarding
+
+A guard's return value controls the router's behavior:
+
+| GUARD  RETURN VALUE | DETAILS                                                                                                                       |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| true                | The navigation process continues                                                                                              |
+| false               | The navigation process stops and the user stays put                                                                           |
+| UrlTree             | The current navigation cancels and a new navigation is initiated to the UrlTree returned <br/> <br/> `router.createUrlTree()` |
+
+You can have multiple guards at every level of a routing hierarchy.
+
+The router checks the canDeactivate guards first, from the deepest child route to the top.
+
+Then it checks the canActivate and canActivateChild guards from the top down to the deepest child route.
+
+`If the feature module is loaded asynchronously, (lazy loading)`, the canMatch guard is checked before the module is loaded.
+
+With the exception of canMatch, if any guard returns false, pending guards that have not completed are canceled, and the entire navigation is canceled.
+
+If a canMatch guard returns false, the Router continues processing the rest of the Routes to see if a different Route config matches the URL
+
+---
+
+### CanActivate
 
 - Write a ***Service*** that implements `CanActivate`
 - Then, the function `canActivate` will later guard the route
@@ -783,7 +825,7 @@ canActivate(route: ActivatedRouteSnapshot, state:RouterStateSnapshot): Observabl
 >
 > If any guard returns a UrlTree, the current navigation is cancelled and a new navigation begins to the UrlTree returned from the guard
 
-### Child route guarding
+### CanActivateChild: Child route guarding
 
 #### Use in the case when you only want to guard the children routes
 
@@ -808,7 +850,7 @@ canActivate(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Obs
 }
 ```
 
-### Controlling whether user can leave a route
+### CanDeactivate: Controlling whether user can leave a route
 
 - Create a service that implements the `CanDeactivate<T>` interface
   - `T` is an interface that has a function that will be executed when the user trys to leave the route
@@ -841,7 +883,7 @@ export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeac
 
 - Make sure that your component implement `T`
 - Then create the function defined from `T`
-  - This function will be called when the user trys to leave the route
+  - This function will be called when the user tries to leave the route
   
 ```ts
 canDeactivate(): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit {
@@ -875,7 +917,7 @@ this.route.subscribe((data: Data) => {
 })
 ```
 
-### Passing `dynamic` data to a route
+### Resolver: Passing `dynamic` data to a route
 
 #### For example if you want to fetch some data before rendering the route
 
@@ -900,6 +942,76 @@ export class ServerResolverService implements Resolver<temp> {
 
 - The dynamic data will be stored on the `resolver`
 - Read the data from the route, similarly to what is done with static data
+- `Returning an empty Observable (EMPTY) in at least one resolver cancels navigation`
+
+### Routing module
+
+Try to organize your app into modules with their own routing
+
+It improves readability and scalability
+
+Each routing module augments the route configuration in the order of import. `So routing import order is important!`
+
+## Lazy loading modules
+
+- You can load feature areas only when requested by the user
+- You can speed up load time for users that only visit certain areas of the application
+- You can continue expanding lazy loaded feature areas without increasing the size of the initial load bundle
+
+```ts
+{
+  path: 'admin',
+  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+}
+```
+
+The path is the location of the AdminModule `(relative to the application root)`
+
+When using absolute paths, the NgModule file location must begin with src/app in order to resolve correctly. 
+
+For custom path mapping with absolute paths, you must configure the baseUrl and paths properties in the project tsconfig.json.
+
+### canMatch: doesn't even load the module for lazy loaded modules
+
+With canActivate, canActivateChildren, even if the user can't activate the route, the module is still loaded.
+
+For not even loading the module, use `canMatch: [canMatchFn]`
+
+It has the same usage rules than canActivate/canActivateChildren
+
+### Take the final step and detach the admin feature set from the main application
+
+The root AppModule must neither load nor reference the AdminModule or its files
+
+In app.module.ts, remove the AdminModule import statement from the top of the file and remove the AdminModule from the NgModule's imports array
+
+### eager vs lazy vs preload modules
+
+- eager => load module at the startup (default, load all modules)
+  - bad UX for modules that are not visited often
+- lazy => loaded when requested
+  - good for modules that are visited not so often
+- preload => loaded after startup
+  - good for UX
+  - good for modules that are visited after main module(s)
+
+#### Preload strategy
+
+- Simple and effective one
+
+```ts
+RouterModule.forRoot(
+        appRoutes,
+        {
+          enableTracing: true, // <-- debugging purposes only
+          preloadingStrategy: PreloadAllModules
+        }
+)
+```
+
+- For a more controlled one, use `Custom Preloading Strategy`
+  - A class that implements `PreloadingStrategy`
+  - Check docs <https://angular.io/guide/router-tutorial-toh#custom-preloading-strategy>
 
 ## Observables
 
@@ -982,7 +1094,6 @@ const transformedIntervalObserver =  customIntervalObserver.pipe(map(data => {
 - Then you can manipulate the error or even return a custom error
 - Remember to return the error with `throwError` from rxjs
   - It will be the value accessed by the function with handles the error on the subscriber `(second function)`
-
 
 ## Subjects
 
@@ -1503,7 +1614,7 @@ To avoid this error, a lifecycle hook method that seeks to make such a change sh
 
 ### `useClass`
 
-The useClass provider key lets you create and return a new instance of the specified class 
+The useClass provider key lets you create and return a new instance of the specified class
 
 You can use this type of provider to substitute an alternative implementation for a common or default class
 
@@ -1511,7 +1622,7 @@ In the following example, the BetterLogger class would be instantiated when the 
 
 ```ts
 [{ provide: Logger, useClass: BetterLogger }]
-``` 
+```
 
 If the alternative class providers have their own dependencies, specify both providers in the providers metadata property of the parent module or component
 
