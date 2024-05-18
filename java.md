@@ -86,3 +86,81 @@ switch (switchValue) {
 
 }
 ```
+
+## OOP
+
+A class is a template for creating objects
+
+You create an object by instantiating a class
+
+Object and instance are interchangeable
+
+`this` refers to the instance that was created when the object was instantiated
+
+### Keywords
+
+- `static`
+  - Value of the field is stored in special memory location and only in one place
+  - Accessed by ClassName.fieldName
+  - It doesn't belong to the object, but to the class
+  - A static method can't reference any of the instance members (fields or methods)
+- `null`
+  - It means the variable or attribute has a type, but no reference to an object
+  - For primitive data types, they receive their default value
+    - boolean => false
+    - byte, short, int, long => 0
+    - float, double => 0.0
+
+### Constructor
+
+A function that is called when the object is instantiated
+
+If a class has no constructor, the default constructor is implicitly declared
+
+The default constructor has no args (no-args constructor)
+
+If a class has any other constructor, then de default one is not implicitly declared
+
+#### Constructor overloading
+
+It's the same than function overloading, but for constructors
+
+#### Constructor chaining
+
+When one constructor calls another overloaded constructor
+
+You can call a constructor only from another constructor
+
+You must use the special statement `this()` to execute another constructor, passing arguments if required
+
+`this()` must be the first executable statement, if it's used from another constructor
+
+### Packages
+
+Classes can be organized into logical groupings called packages
+
+If you don't declare a package, the class implicitly belongs to the default package
+
+### Access modifiers
+
+Access modifiers in Java are used to set the visibility and accessibility of classes, methods, and variables
+
+- `public`
+  - The public keyword allows a class, method, or variable to be accessible from any other class in your application
+- `private`
+  - The private keyword restricts the accessibility of a class, method, or variable to its own class
+- `protected`
+  - The protected keyword allows a class, method, or variable to be accessible within its own package and by subclasses in other packages
+- In Java, if you do not specify an access modifier, it defaults to package-private, which allows a class, method, or variable to be accessible within its own package
+
+### Top-level class
+
+A class defined in the source code file, and not enclose in the code block of another class, type, or modified
+
+It has only 2 access modifiers" `public` or none [default] (omitted modifier, meaning the class is accessible only to classes in the same package)
+
+### Encapsulation
+
+- Hiding of fields and some methods from public access
+- Bundling of fields and methods on a single object
+- Normally, the fields are private. So you create getters and setters to handle those fields
