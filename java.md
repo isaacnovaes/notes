@@ -209,6 +209,12 @@ Fields (component field) are private and final
   - `this()` and `super()` can never be called from the same constructor
   - if you don't male a call to `super()`, than Java makes it for you, calling the super's default constructor
 
+#### `java.lang.Object`
+
+Every class and array inherits from `Object`
+
+`hashCode()` is unique among class instances
+
 ### Polymorphism
 
 - It means many forms
