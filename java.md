@@ -219,3 +219,12 @@ Every class and array inherits from `Object`
 
 - It means many forms
 - When a child class overrides a parent class to make a new implementation of a method
+
+## Java intellij conf
+
+- Editor > general >
+  - auto import >
+    - select add unambiguous imports on the fly and optimize imports on the fly
+  - code folding >
+    - General > unselect file header and imports
+    - Java > unselect one-line methods, closures, and generic constructors and method parameters
