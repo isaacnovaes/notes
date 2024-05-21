@@ -104,6 +104,12 @@ Object and instance are interchangeable
   - Accessed by ClassName.fieldName
   - It doesn't belong to the object, but to the class
   - A static method can't reference any of the instance members (fields or methods)
+  - Whenever you see a method that don't use the instance variables, it should probably be declared as a static method
+  - Common uses:
+    - Storing counters
+    - Generating unique ids
+    - Storing a constant value
+    - Creating and controlling access to a share resource
 - `null`
   - It means the variable or attribute has a type, but no reference to an object
   - For primitive data types, they receive their default value
@@ -159,8 +165,51 @@ A class defined in the source code file, and not enclose in the code block of an
 
 It has only 2 access modifiers" `public` or none [default] (omitted modifier, meaning the class is accessible only to classes in the same package)
 
+### POJO (plain old Java object)
+
+A class that generally has only instance fields
+
+Used to store and pass data between functional classes
+
+It also might be called a bean, or JavaBean
+
+Another acronym is DTO, data transfer object
+
+Sometimes also called an Entity, because it reflect the database entities
+
+Many frameworks use POJO's to read data from or write data to databases, files, or streams
+
+### Record (JDK >= 16)
+
+It removes the boiler plate that POJO has, but to be more restrictive
+
+Java calls them "plain data carriers"
+
+Record is a special class that contains data that's not supposed to be changed
+
+It creates the fields and the getters
+
+Fields (component field) are private and final
+
 ### Encapsulation
 
 - Hiding of fields and some methods from public access
 - Bundling of fields and methods on a single object
 - Normally, the fields are private. So you create getters and setters to handle those fields
+
+### Inheritance
+
+- Code reuse
+- Organize classes into a parent-child hierarchy
+  - Child inherits fields and methods from its parent
+- A child can have only one direct parent, but it inherit from the parent class's parent, an so on
+  - Only one class ofter `extends`
+- `super()` calls the constructor of the parent class
+  - like `this()`, `super()` has to be the first statement of the constructor
+  - `this()` and `super()` can never be called from the same constructor
+  - if you don't male a call to `super()`, than Java makes it for you, calling the super's default constructor
+
+### Polymorphism
+
+- It means many forms
+- When a child class overrides a parent class to make a new implementation of a method
