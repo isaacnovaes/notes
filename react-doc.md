@@ -1,5 +1,35 @@
 # React doc notes
 
+- [React doc notes](#react-doc-notes)
+  - [Components](#components)
+  - [JSX](#jsx)
+    - [JSX Keys](#jsx-keys)
+    - [KEEP COMPONENTS PURE](#keep-components-pure)
+  - [Events](#events)
+  - [Render process (3 steps)](#render-process-3-steps)
+  - [React state batching](#react-state-batching)
+  - [useState hook](#usestate-hook)
+    - [Calling useState many times](#calling-usestate-many-times)
+    - [State updater function naming conventions](#state-updater-function-naming-conventions)
+    - [dos and donts](#dos-and-donts)
+    - [It’s useful to consider components as “controlled” (driven by props) or “uncontrolled” (driven by state)](#its-useful-to-consider-components-as-controlled-driven-by-props-or-uncontrolled-driven-by-state)
+    - [When a component loses state](#when-a-component-loses-state)
+  - [useReducer](#usereducer)
+  - [useContext](#usecontext)
+    - [Alternatives](#alternatives)
+    - [Before you use context, try passing props or passing JSX as children](#before-you-use-context-try-passing-props-or-passing-jsx-as-children)
+  - [useRef](#useref)
+    - [Limitations of React state don’t apply to refs](#limitations-of-react-state-dont-apply-to-refs)
+  - [useState and useRef return stable identity values (can be safely used in dependency arrays)](#usestate-and-useref-return-stable-identity-values-can-be-safely-used-in-dependency-arrays)
+  - [useEffect](#useeffect)
+    - [You don’t need Effects](#you-dont-need-effects)
+    - [Effect writing good practice](#effect-writing-good-practice)
+    - [useEffectEvent(future)](#useeffecteventfuture)
+  - [Pay attention](#pay-attention)
+  - [useMemo](#usememo)
+    - [Is memoization needed?](#is-memoization-needed)
+    - [Children as JSX plus trick](#children-as-jsx-plus-trick)
+
 ## Components
 
 - React components are JS functions that return JSX
@@ -396,34 +426,39 @@ In practice, you can make a lot of memoization unnecessary by following a few pr
 `In the context of performance/memoization, if it's needed, memoize the children prop passed to the wrapper, or the memoization will break`
 
 ```tsx
-const Wrapper = ({children}) => {
-  const [isOpen,setIsOpen] = useState(true) 
-  // when the state changes, the children don’t render
-    return <div>{children}</div>
-}
+const Wrapper = ({ children }) => {
+	const [isOpen, setIsOpen] = useState(true);
+	// when the state changes, the children don’t render
+	return <div>{children}</div>;
+};
 ```
 
 ```tsx
-const WrapperMemo = memo(<Child/>)
-const ChildMemo = memo(<Child/>)
+const WrapperMemo = memo(<Child />);
+const ChildMemo = memo(<Child />);
 // syntax sugar for
 // const child = React.createElement(MemoChild,props,children)
 // which returns an object representing a DOM tree
 // const child = {
 //      type: MemoChild,
 //      props: {...},
-//      ... internal stuff 
+//      ... internal stuff
 // }
 // the reference to this object is not memoized
 // so it will make the WrapperMemo to rerender, because the children prop changes on every rerender, just like som={[1,2,3]}
 // <WrapperMemo children={{unmemoized ChildMemo reference}}>
 
 const Parent = () => {
- 	const [isOpen,setIsOpen] = useState(true) 
-// when the state changes, Wrap and Child rerender, even through Child uses memo
- 	return <WrapperMemo><ChildMemo/></WrapperMemo>
-}
+	const [isOpen, setIsOpen] = useState(true);
+	// when the state changes, Wrap and Child rerender, even through Child uses memo
+	return (
+		<WrapperMemo>
+			<ChildMemo />
+		</WrapperMemo>
+	);
+};
 ```
+
 // TODO continue from here
 
 ---

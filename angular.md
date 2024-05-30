@@ -4,20 +4,150 @@ AngularJS (Angular 1)
 
 Angular 2 (2016) ... => Angular
 
-- New version every 6 months, backward, incremental, compatible changes
+- [Angular notes](#angular-notes)
+  - [Possible ways to use the selector property of the object passed to @Component decorator](#possible-ways-to-use-the-selector-property-of-the-object-passed-to-component-decorator)
+  - [OutputData](#outputdata)
+  - [html =\> ts code](#html--ts-code)
+  - [html \<=\> ts code](#html--ts-code-1)
+    - [Combination of output data and reacting to user events](#combination-of-output-data-and-reacting-to-user-events)
+  - [Directives](#directives)
+    - [Reacting to any event, even custom events](#reacting-to-any-event-even-custom-events)
+    - [Biding to component properties](#biding-to-component-properties)
+    - [listening to enter-key keydown event](#listening-to-enter-key-keydown-event)
+    - [Passing value to directives](#passing-value-to-directives)
+  - [Structural directives](#structural-directives)
+    - [Responsible for HTML layout, they shape or reshape the DOM's structure, typically by adding, removing, and manipulating the host elements to which they are attached](#responsible-for-html-layout-they-shape-or-reshape-the-doms-structure-typically-by-adding-removing-and-manipulating-the-host-elements-to-which-they-are-attached)
+      - [They have a leading `*` when being used](#they-have-a-leading--when-being-used)
+    - [Creating structural directives](#creating-structural-directives)
+  - [Attribute directives](#attribute-directives)
+    - [Change the appearance or behavior of an element, component, or another directive](#change-the-appearance-or-behavior-of-an-element-component-or-another-directive)
+  - [Passing data (bound input properties \[props\]) to a component \& getting data from a component (events)](#passing-data-bound-input-properties-props-to-a-component--getting-data-from-a-component-events)
+    - [View encapsulation (CSS styles encapsulation policies)](#view-encapsulation-css-styles-encapsulation-policies)
+      - [You can change this default behavior (ViewEncapsulation.Emulated) (encapsulation property of the object passed to @Component decorator)](#you-can-change-this-default-behavior-viewencapsulationemulated-encapsulation-property-of-the-object-passed-to-component-decorator)
+  - [Element reference (local reference)](#element-reference-local-reference)
+  - [Render children inside component](#render-children-inside-component)
+    - [Single-slot projection](#single-slot-projection)
+    - [Multi-slot projection](#multi-slot-projection)
+    - [Conditional content projection](#conditional-content-projection)
+    - [Access the ref](#access-the-ref)
+  - [Component lifecycle](#component-lifecycle)
+    - [`ngOnChanges()`](#ngonchanges)
+      - [Respond when Angular sets or resets data-bound input properties](#respond-when-angular-sets-or-resets-data-bound-input-properties)
+    - [`ngOnInit()`](#ngoninit)
+      - [Initialize the directive or component after Angular first displays the data-bound properties (here data-bound properties are ready to use) and sets the directive or component's input properties](#initialize-the-directive-or-component-after-angular-first-displays-the-data-bound-properties-here-data-bound-properties-are-ready-to-use-and-sets-the-directive-or-components-input-properties)
+    - [`ngOnDoCheck()`](#ngondocheck)
+      - [Detect and act upon changes that Angular can't or won't detect on its own](#detect-and-act-upon-changes-that-angular-cant-or-wont-detect-on-its-own)
+    - [`ngAfterContentInit()`](#ngaftercontentinit)
+      - [Respond after Angular projects external content `children, <ng-content></ng-content>` projected into the component's view, or into the view that a directive is in](#respond-after-angular-projects-external-content-children-ng-contentng-content-projected-into-the-components-view-or-into-the-view-that-a-directive-is-in)
+    - [`ngAfterContentChecked()`](#ngaftercontentchecked)
+      - [Respond after Angular checks the content `children, <ng-content></ng-content>` projected into the component's view, or into the view that a directive is in](#respond-after-angular-checks-the-content-children-ng-contentng-content-projected--into-the-components-view-or-into-the-view-that-a-directive-is-in)
+    - [`ngAfterViewInit()`](#ngafterviewinit)
+      - [Respond after Angular initializes the component's views and child views `(components or HTML elements used inside component's view)`, or the view that contains the directive](#respond-after-angular-initializes-the-components-views-and-child-views-components-or-html-elements-used-inside-components-view-or-the-view-that-contains-the-directive)
+    - [`ngAfterViewChecked()`](#ngafterviewchecked)
+      - [Respond after Angular checks the component's views and child views `(components or HTML elements used inside component's view)`, or the view that contains the directive](#respond-after-angular-checks-the-components-views-and-child-views-components-or-html-elements-used-inside-components-view-or-the-view-that-contains-the-directive)
+    - [`ngOnDestroy()`](#ngondestroy)
+      - [Cleanup just before Angular destroys the directive or component. Unsubscribe Observables and detach event handlers to avoid memory leaks](#cleanup-just-before-angular-destroys-the-directive-or-component-unsubscribe-observables-and-detach-event-handlers-to-avoid-memory-leaks)
+      - [DestroyRef](#destroyref)
+  - [Services](#services)
+    - [Providing values from the service](#providing-values-from-the-service)
+  - [Hierarchy](#hierarchy)
+  - [Types of injectors](#types-of-injectors)
+  - [Resolution rules](#resolution-rules)
+  - [Resolution modifiers](#resolution-modifiers)
+    - [`@Self()`](#self)
+    - [`@SkipSelf()`](#skipself)
+    - [`@Host()`](#host)
+  - [~~Subscribing to service value changes~~ USE SUBJECT INSTEAD](#subscribing-to-service-value-changes-use-subject-instead)
+  - [Routing](#routing)
+    - [Route order](#route-order)
+    - [New way](#new-way)
+    - [Route path wildcards](#route-path-wildcards)
+    - [Linking](#linking)
+      - [Style active link](#style-active-link)
+    - [Relative vs Absolute paths](#relative-vs-absolute-paths)
+      - [Relative paths](#relative-paths)
+      - [Absolute paths](#absolute-paths)
+    - [Setting static/dynamic page title](#setting-staticdynamic-page-title)
+      - [Static](#static)
+      - [Dynamic](#dynamic)
+    - [Programmatically navigation](#programmatically-navigation)
+    - [Dynamic route](#dynamic-route)
+    - [Query params](#query-params)
+    - [Route params or queryParams](#route-params-or-queryparams)
+    - [Nested routes](#nested-routes)
+    - [Preserving params when navigating programmatically](#preserving-params-when-navigating-programmatically)
+    - [Route guarding](#route-guarding)
+    - [CanActivate](#canactivate)
+    - [CanActivateChild: Child route guarding](#canactivatechild-child-route-guarding)
+      - [Use in the case when you only want to guard the children routes](#use-in-the-case-when-you-only-want-to-guard-the-children-routes)
+    - [CanDeactivate: Controlling whether user can leave a route](#candeactivate-controlling-whether-user-can-leave-a-route)
+    - [Passing `static` data to a route](#passing-static-data-to-a-route)
+    - [Resolver: Passing `dynamic` data to a route](#resolver-passing-dynamic-data-to-a-route)
+      - [For example if you want to fetch some data before rendering the route](#for-example-if-you-want-to-fetch-some-data-before-rendering-the-route)
+    - [Routing module](#routing-module)
+  - [Lazy loading modules](#lazy-loading-modules)
+    - [canMatch: doesn't even load the module for lazy loaded modules](#canmatch-doesnt-even-load-the-module-for-lazy-loaded-modules)
+    - [Take the final step and detach the admin feature set from the main application](#take-the-final-step-and-detach-the-admin-feature-set-from-the-main-application)
+    - [eager vs lazy vs preload modules](#eager-vs-lazy-vs-preload-modules)
+      - [Preload strategy](#preload-strategy)
+  - [Observables](#observables)
+    - [Constructs which you subscribe to be informed about changes in data](#constructs-which-you-subscribe-to-be-informed-about-changes-in-data)
+    - [Angular makes use of observables as an interface to handle a variety of common _asynchronous operations_. For example](#angular-makes-use-of-observables-as-an-interface-to-handle-a-variety-of-common-asynchronous-operations-for-example)
+    - [Remember to always unsubscribe from observables not provided by Angular](#remember-to-always-unsubscribe-from-observables-not-provided-by-angular)
+    - [Custom observer](#custom-observer)
+    - [Transforming observable data with `pipe` operator](#transforming-observable-data-with-pipe-operator)
+    - [Remember about the `catchError` operator inside `pipe` operator](#remember-about-the-catcherror-operator-inside-pipe-operator)
+  - [Subjects](#subjects)
+  - [Angular Forms](#angular-forms)
+  - [Simple, Template-driven (TD)](#simple-template-driven-td)
+    - [Accessing the form reference inside ts code](#accessing-the-form-reference-inside-ts-code)
+    - [Form inputs register control](#form-inputs-register-control)
+    - [Validation](#validation)
+    - [Using references to controlled inputs](#using-references-to-controlled-inputs)
+    - [Setting form control default values](#setting-form-control-default-values)
+    - [Types of biding with `ngModel`](#types-of-biding-with-ngmodel)
+    - [Grouping form controls](#grouping-form-controls)
+    - [Accessing form control group information](#accessing-form-control-group-information)
+    - [Setting control values with `setValue` and `patchValue`](#setting-control-values-with-setvalue-and-patchvalue)
+    - [Resetting controls](#resetting-controls)
+  - [Reactive forms](#reactive-forms)
+    - [Getting access to controls on the template](#getting-access-to-controls-on-the-template)
+    - [Form group](#form-group)
+    - [Dynamic form controls (`FormArray`)](#dynamic-form-controls-formarray)
+  - [Custom validator `(there is also async validators)`](#custom-validator-there-is-also-async-validators)
+    - [Observables `statusChanges` and `valueChanges`](#observables-statuschanges-and-valuechanges)
+    - [`setValue` and `patchValue` also exist for reactive-forms](#setvalue-and-patchvalue-also-exist-for-reactive-forms)
+  - [Pipes](#pipes)
+    - [Create a pipe](#create-a-pipe)
+      - [Pure decorator property](#pure-decorator-property)
+      - [Standalone pipe property](#standalone-pipe-property)
+      - [If possible, try to use more the `async` pipe](#if-possible-try-to-use-more-the-async-pipe)
+  - [HTTP module](#http-module)
+  - [Dynamic components](#dynamic-components)
+    - [Old way](#old-way)
+    - [New way](#new-way-1)
+  - [Modules](#modules)
+    - [Lazy loading](#lazy-loading)
+  - [Unidirectional data flow](#unidirectional-data-flow)
+  - [Dependency injection](#dependency-injection)
+    - [`useClass`](#useclass)
+    - [`useExisting`](#useexisting)
+    - [`useFactory`](#usefactory)
+    - [`useValue`](#usevalue)
+    - [Using an `InjectionToken` object](#using-an-injectiontoken-object)
 
 ## Possible ways to use the selector property of the object passed to @Component decorator
 
 - selector: '[app-servers]'
-  
+
 ```html
-<div app-servers ></div>
+<div app-servers></div>
 ```
 
 - selector: '.app-servers'
-  
+
 ```html
-<div class='app-servers'></div>
+<div class="app-servers"></div>
 ```
 
 - selector: 'server-component'
@@ -28,29 +158,29 @@ Angular 2 (2016) ... => Angular
 
 ## OutputData
 
-- ***string interpolation*** `{{data}}`
+- **_string interpolation_** `{{data}}`
   - should return something that can be converted to a string
-- ***property biding*** (HTML element properties) `[property]="expression"` (one-way biding)
+- **_property biding_** (HTML element properties) `[property]="expression"` (one-way biding)
   - change ts code variable value triggers an update on html, but html update doesn't update ts code variable value
-- ***attribute biding*** (HTML element attributes) `[attr.attribute-you-are-targeting]="expression"`
+- **_attribute biding_** (HTML element attributes) `[attr.attribute-you-are-targeting]="expression"`
   - Here, `attr.` is constant
-  
+
 ```html
 [attr.aria-label]="actionName"
 ```
-  
+
 ## html => ts code
 
-- ***event biding*** `(event)="expression"`
-or `(eventName)='myFunc($event)` => for capturing event information
+- **_event biding_** `(event)="expression"`
+  or `(eventName)='myFunc($event)` => for capturing event information
   - React to events
   - For keyboard events, ALWAYS check <https://angular.io/guide/event-binding#binding-to-keyboard-events>
-  
+
 ## html <=> ts code
 
 ### Combination of output data and reacting to user events
 
-- ***two-way-biding*** `[(property)]="expression"`
+- **_two-way-biding_** `[(property)]="expression"`
   - an update in html triggers an update in ts code and vice-versa
   - use the pattern `property` for @Input and `propertyChange` for @Output
   - Whenever you update the property, emit an event with this updated value
@@ -79,20 +209,21 @@ You can't access the implementation of a built-in `<div>`, or modify a third par
 
 ```ts
 @Directive({
-selector: '[appTurnGreen]'
+	selector: '[appTurnGreen]',
 })
 export class BetterHighlightDirective implements OnInit {
+	constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+	// USE RENDERER FOR ANY DOM MANIPULATION
+	// FOR SIMPLE DOM MANIPULATION, USE HOSTING BIDING
 
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) { }
-  // USE RENDERER FOR ANY DOM MANIPULATION
-  // FOR SIMPLE DOM MANIPULATION, USE HOSTING BIDING
-
-  // ElementRef grants direct access to the host DOM element through its nativeElement property
-  ngOnInit(): void {
-    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'green')
-  }
- 
-
+	// ElementRef grants direct access to the host DOM element through its nativeElement property
+	ngOnInit(): void {
+		this.renderer.setStyle(
+			this.elementRef.nativeElement,
+			'background-color',
+			'green'
+		);
+	}
 }
 ```
 
@@ -100,7 +231,7 @@ export class BetterHighlightDirective implements OnInit {
 
 ```ts
  // USE HOSTLISTENER FOR REACTING TO ANY EVENT
-  @HostListener("mouseover", ['$event']) 
+  @HostListener("mouseover", ['$event'])
   onMouseover(event: MouseEvent) {
     this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue')
   }
@@ -109,15 +240,15 @@ export class BetterHighlightDirective implements OnInit {
 ### Biding to component properties
 
 ```ts
-  @HostBiding('style.backgroundColor') 
+  @HostBiding('style.backgroundColor')
   backgroundColor: string = 'transparent';
 
-  @HostListener("mouseenter", ['$event']) 
+  @HostListener("mouseenter", ['$event'])
   onMouseover(event: MouseEvent) {
     this.backgroundColor = 'blue'
   }
-  
-  @HostListener("mouseleave", ['$event']) 
+
+  @HostListener("mouseleave", ['$event'])
   onMouseover(event: MouseEvent) {
     this.backgroundColor = 'transparent'
   }
@@ -143,28 +274,28 @@ export class BetterHighlightDirective implements OnInit {
 
 ```ts
 @Directive({
-  selector: '[appHighlight]',
+	selector: '[appHighlight]',
 })
 export class HighlightDirective {
-  constructor(private el: ElementRef) {}
+	constructor(private el: ElementRef) {}
 
-  @Input() defaultColor = '';
+	@Input() defaultColor = '';
 
-  @Input() appHighlight = '';
+	@Input() appHighlight = '';
 
-  @HostListener('mouseenter') 
-  onMouseEnter() {
-    this.highlight(this.appHighlight || this.defaultColor || 'red');
-  }
+	@HostListener('mouseenter')
+	onMouseEnter() {
+		this.highlight(this.appHighlight || this.defaultColor || 'red');
+	}
 
-  @HostListener('mouseleave') 
-  onMouseLeave() {
-    this.highlight('');
-  }
+	@HostListener('mouseleave')
+	onMouseLeave() {
+		this.highlight('');
+	}
 
-  private highlight(color: string) {
-    this.el.nativeElement.style.backgroundColor = color;
-  }
+	private highlight(color: string) {
+		this.el.nativeElement.style.backgroundColor = color;
+	}
 }
 ```
 
@@ -179,15 +310,15 @@ export class HighlightDirective {
 #### They have a leading `*` when being used
 
 - `ngIf` => conditionally render the component
-  <button  *ngIf="showButton()">Reset username</button>
+  <button \*ngIf="showButton()">Reset username</button>
 
   - `ngIf` with else branch
-  
+
 ```html
-  <button  *ngIf="showButton; else showEmptyMessage">Reset username</button>
-  <ng-template #showEmptyMessage >
-  <padding>No empty</padding>
-  </ng-template>
+<button *ngIf="showButton; else showEmptyMessage">Reset username</button>
+<ng-template #showEmptyMessage>
+	<padding>No empty</padding>
+</ng-template>
 ```
 
 - `ngFor` for rendering lists
@@ -201,23 +332,23 @@ export class HighlightDirective {
   - `last`: boolean: True when the item is the last item in the iterable.
   - `even`: boolean: True when the item has an even index in the iterable.
   - `odd`: boolean: True when the item has an odd index in the iterable.
-  
+
 ```html
-<listItem *ngFor="let item of items; index as i; trackBy: trackByFn">...</listItem>
+<listItem *ngFor="let item of items; index as i; trackBy: trackByFn"
+	>...</listItem
+>
 ```
 
 - `ngSwitch` for conditional render
-  
+
 ```html
- <ng-container [ngSwitch]="myVal">
-  <p *ngSwitchCase="1">val 1</p>
-  <ng-container *ngSwitchCase="2">
-    <p>val 2</p>
-    .
-    .
-    .
-  </ng-container>
-  <p *ngSwitchDefault>val default</p>
+<ng-container [ngSwitch]="myVal">
+	<p *ngSwitchCase="1">val 1</p>
+	<ng-container *ngSwitchCase="2">
+		<p>val 2</p>
+		. . .
+	</ng-container>
+	<p *ngSwitchDefault>val default</p>
 </ng-container>
 ```
 
@@ -225,25 +356,25 @@ export class HighlightDirective {
 
 ```ts
 @Directive({
-  selector: '[appUnless]',
+	selector: '[appUnless]',
 })
 export class UnlessDirective {
-  private hasView = false;
+	private hasView = false;
 
-  constructor(
-    private templateRef: TemplateRef<unknown>,
-    private viewContainer: ViewContainerRef,
-  ) {}
+	constructor(
+		private templateRef: TemplateRef<unknown>,
+		private viewContainer: ViewContainerRef
+	) {}
 
-  @Input() set appUnless(condition: boolean) {
-    if (!condition && !this.hasView) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-      this.hasView = true;
-    } else if (condition && this.hasView) {
-      this.viewContainer.clear();
-      this.hasView = false;
-    }
-  }
+	@Input() set appUnless(condition: boolean) {
+		if (!condition && !this.hasView) {
+			this.viewContainer.createEmbeddedView(this.templateRef);
+			this.hasView = true;
+		} else if (condition && this.hasView) {
+			this.viewContainer.clear();
+			this.hasView = false;
+		}
+	}
 }
 ```
 
@@ -258,13 +389,14 @@ export class UnlessDirective {
 - `ngStyle` => expects an object with styles (remove or adds styles dynamically)
 - `ngClass` => expects an object where the keys are the classed and the values are booleans (remove or adds classes
   dynamically)
-- For ***biding only one class***, use class biding!
+- For **_biding only one class_**, use class biding!
   `[class.ClassNaMe]='booleanExpression'`
 - `ngModel` => Adds two-way data binding to an HTML form element.
 
 ## Passing data (bound input properties [props]) to a component & getting data from a component (events)
 
 - @Input('aliasBidingPropertyName') classField;
+
   - Pass data down to a child component
 
 - @Output() event = new EventEmitter<T>();
@@ -284,27 +416,30 @@ E.g.: the styles that a component has is scoped to this component (not applied t
 ## Element reference (local reference)
 
 - Only available inside html, but you can pass data via events to the ts code
+
   - You can access all component properties and methods
-  
+
     ```html
-    <input type="text" class="form-control" #serverNameInput>
+    <input type="text" class="form-control" #serverNameInput />
     <span>{{serverNameInput.value}}</span>
-    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">
+    	Add Server
+    </button>
     <on-changes [hero]="hero" [power]="power"></on-changes>
     ```
 
 - Doing the same thing from ts code side, do the following:
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterViewInit()`
-  
+
   ```ts
-  @ViewChild('serverNameInput') 
+  @ViewChild('serverNameInput')
   serverContentInput: ElementRef<HTMLInputElement>;
   ```
 
   - In case you want to access it inside ngOnInit(), use `{static: true}`
-  
+
   ```ts
-  @ViewChild('serverNameInput', {static: true}) 
+  @ViewChild('serverNameInput', {static: true})
   serverContentInput: ElementRef<HTMLInputElement>;
   ```
 
@@ -315,9 +450,9 @@ E.g.: the styles that a component has is scoped to this component (not applied t
 ```ts
 NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
 ```
-  
+
 ```ts
-    @ViewChild(OnChangesComponent) 
+    @ViewChild(OnChangesComponent)
     childView!: OnChangesComponent;
 ```
 
@@ -331,7 +466,7 @@ While using the component, just pass in the children inside the component
 
 ```html
 <app-server-element>
-    <p #paragraphElement>hello</p>
+	<p #paragraphElement>hello</p>
 </app-server-element>
 ```
 
@@ -340,23 +475,21 @@ While using the component, just pass in the children inside the component
 A component can have multiple slots. Each slot can specify a CSS selector that determines which content goes into that slot
 
 - Add a select attribute to the `<ng-content>` elements. Angular supports selectors for any combination of tag name, attribute, directive, CSS class, and the :not pseudo-class
-  
+
 ```html
 <h2>Multi-slot content projection</h2>
 
 Default:
-  <ng-content></ng-content>
+<ng-content></ng-content>
 
 Question:
-  <ng-content select="[question]"></ng-content>
+<ng-content select="[question]"></ng-content>
 ```
 
 ```html
 <app-zippy-multislot>
-  <p question>
-    Is content projection cool?
-  </p>
-  <p>Let's learn about content projection!</p>
+	<p question>Is content projection cool?</p>
+	<p>Let's learn about content projection!</p>
 </app-zippy-multislot>
 ```
 
@@ -376,9 +509,9 @@ Using an `<ng-content>` element in these cases is not recommended, because when 
 
 - For accessing an element (via ref) which is passed as content (`children`), use `@ContentChild`
 - `BUT REMEMBER, THE REFERENCE IS AVAILABLE ONLY IN/AFTER ngAfterContentInit()`
-  
+
 ```ts
- @ContentChild('paragraphElement', {static: true}) 
+ @ContentChild('paragraphElement', {static: true})
  paragraph: ElementRef<HTMLParagraphElement>
 ```
 
@@ -390,7 +523,7 @@ After your application instantiates a component or directive by calling its cons
 
 #### Respond when Angular sets or resets data-bound input properties
 
-- Called before ngOnInit() (*if the component has bound inputs*) and whenever one or more data-bound input properties
+- Called before ngOnInit() (_if the component has bound inputs_) and whenever one or more data-bound input properties
   change
 - If your component has no inputs, or you use it without providing any inputs, the framework will not call ngOnChanges()
 - The method receives a `SimpleChanges` object of current and previous property values
@@ -419,7 +552,7 @@ After your application instantiates a component or directive by calling its cons
 
 ### `ngAfterContentChecked()`
 
-#### Respond after Angular checks the content `children, <ng-content></ng-content>` projected  into the component's view, or into the view that a directive is in
+#### Respond after Angular checks the content `children, <ng-content></ng-content>` projected into the component's view, or into the view that a directive is in
 
 - Called after ngAfterContentInit() and every subsequent ngDoCheck()
 - `Beware! Called frequently!`
@@ -473,6 +606,7 @@ If DestroyRef is injected in a component or directive, the callbacks run when th
 - service provided at `AppComponent`
   - available to all components, but not for other services
 - service provided at a component
+
   - available to all children of the given component
 
 - If you provide the service to a child, it will overwrite the service of the parent
@@ -486,10 +620,9 @@ If DestroyRef is injected in a component or directive, the callbacks run when th
 - `ElementInjector()`
   - Angular creates ElementInjector hierarchies implicitly for each DOM element.
 
-
 When the component instance is destroyed, so is that service instance
 
-When you configure a provider for a component or directive using the providers property, that provider belongs to the ElementInjector of that component or directive. 
+When you configure a provider for a component or directive using the providers property, that provider belongs to the ElementInjector of that component or directive.
 
 Components and directives on the same element share an injector.
 
@@ -530,35 +663,35 @@ It doesn't even go to `ModuleInjector`
 ## ~~Subscribing to service value changes~~ <mark>USE SUBJECT INSTEAD</mark>
 
 - on the service, declare the value as an event emitter
-  
+
 ```ts
- selectedRecipe = new EventEmitter<Recipe>()
+selectedRecipe = new EventEmitter<Recipe>();
 ```
 
 - where the value is generated, emit an event
-  
+
 ```ts
- this.recipeService.selectedRecipe.emit(recipe)
+this.recipeService.selectedRecipe.emit(recipe);
 ```
 
 - where the value is consumed, subscribe to service value changes
-  
+
 ```ts
-this.recipeService.selectedRecipe.subscribe( recipe => {
-      this.selectedRecipe = recipe
-    });
+this.recipeService.selectedRecipe.subscribe(recipe => {
+	this.selectedRecipe = recipe;
+});
 ```
 
 ## Routing
 
 - At `app.module.ts`, create the `appRoutes` with `Routes` type from angular
-  - ***no slash for initial routes***
-  
+  - **_no slash for initial routes_**
+
 ```ts
 const appRoutes: Routes = [
-  {path: 'first-component', component: 'FirstComponent'},
-  {path: 'second-component', component: 'SecondComponent'},      
-]
+	{ path: 'first-component', component: 'FirstComponent' },
+	{ path: 'second-component', component: 'SecondComponent' },
+];
 ```
 
 - At the imports, add `RouterModule.forRoot(appRoutes)`
@@ -566,9 +699,9 @@ const appRoutes: Routes = [
 
 ### Route order
 
-The order of routes is important because the Router uses a first-match wins strategy when matching routes, so more specific routes should be placed above less specific routes 
+The order of routes is important because the Router uses a first-match wins strategy when matching routes, so more specific routes should be placed above less specific routes
 
-List routes with a static path first, followed by an empty path route, which matches the default route 
+List routes with a static path first, followed by an empty path route, which matches the default route
 
 The wildcard route comes last because it matches every URL and the Router selects it only if no other routes match first
 
@@ -577,7 +710,7 @@ The wildcard route comes last because it matches every URL and the Router select
 - Add the following to the providers array:
 
 ```ts
-provideRouter(routes, withComponentInputBinding())
+provideRouter(routes, withComponentInputBinding());
 ```
 
 - `withComponentInputBinding()` makes it possible to bind inputs to any route data: static or resolved route data, path parameters, matrix parameters, and query parameters
@@ -597,7 +730,7 @@ provideRouter(routes, withComponentInputBinding())
   - It destroys the app state
 - Instead, use the `routerLink="/first-component"`
   - Or `routerLink="['/first-component',userName, userId, {details: true}]"` to generate: <br> `/first-component/userName/userId;details=true`
-- ***use slash for routes***
+- **_use slash for routes_**
 
 #### Style active link
 
@@ -649,13 +782,13 @@ const resolvedChildATitle: ResolveFn<string> = () => this.titleService.buildTitl
 ### Programmatically navigation
 
 - declare the `router` variable
-  
+
 ```ts
 constructor(private router: Router){}
 ```
 
 - Use the `navigate` method
-  
+
 ```ts
 onLoad() {
     this.router.navigate(['/servers'])
@@ -664,7 +797,7 @@ onLoad() {
 
 - By default, the `navigate` method does not know the url, so it is relative to the initial route
   - you can change that by specifying the `relativeTo` option
-  
+
 ```ts
 constructor(private router: Router, private route: ActivatedRoute){}
 .
@@ -676,63 +809,69 @@ this.router.navigate(['servers'], {relativeTo: this.route})
 ### Dynamic route
 
 - When declaring a route, use a `:`
-  
+
 ```ts
 const appRoutes: Routes = [
-  {title: 'User', component: UserComponent, path: 'users/:id/:name'},
-  {path: 'second-component', component: 'SecondComponent'},
-]
+	{ title: 'User', component: UserComponent, path: 'users/:id/:name' },
+	{ path: 'second-component', component: 'SecondComponent' },
+];
 ```
 
 - At the component, access route information with the `ActivatedRoute`
   - Use `this.route.snapshot` for routes that won't reload providing new data
   - Use `this.route.paramMap` observable for getting the up-to-data route params for cases when the component is reload within itself with new data
-  
+
 ```ts
-  // if the route reloads with different params, this.route.params doesn't run again
-  // for getting the up-to-date params, subscribe to this.route.params
-  const paramMap = this.route.snapshot.paramMap; 
-  this.user = {id: paramMap.get('id'), name: paramMap.get('name')}
+// if the route reloads with different params, this.route.params doesn't run again
+// for getting the up-to-date params, subscribe to this.route.params
+const paramMap = this.route.snapshot.paramMap;
+this.user = { id: paramMap.get('id'), name: paramMap.get('name') };
 ```
 
 ```ts
-    // Always use the up-to-date data
-    // Use switch map for cancelling previous request (concurrent request issue)
-    this.route.paramMap.pipe(switchMap(params => {
-        const id = params.get('id');
-        const name = params.get('name')
-        return {id, name}
-    })).subscribe((newParam)=>{
-      this.user = {id: newParam.id, name: newParam.name}
-    })
+// Always use the up-to-date data
+// Use switch map for cancelling previous request (concurrent request issue)
+this.route.paramMap
+	.pipe(
+		switchMap(params => {
+			const id = params.get('id');
+			const name = params.get('name');
+			return { id, name };
+		})
+	)
+	.subscribe(newParam => {
+		this.user = { id: newParam.id, name: newParam.name };
+	});
 ```
 
 ### Query params
 
 - use `queryParams` directive
 - Then, when the link is clicked, it will add the queryParam to the end of the url
-  
+
 ```html
 <a
-  *ngFor="let server of servers"
-  class="list-group-item"
-  [routerLink]="['/servers',server.id,'edit']"
-  [queryParams]="{allowEdit: true}"
+	*ngFor="let server of servers"
+	class="list-group-item"
+	[routerLink]="['/servers',server.id,'edit']"
+	[queryParams]="{allowEdit: true}"
 >
-  {{ server.name }}
+	{{ server.name }}
 </a>
 ```
 
 or
 
 ```ts
-  this.router.navigate(['/servers',user.id,edit], {queryParams: {allowEdit: user.editable}})
+this.router.navigate(['/servers', user.id, edit], {
+	queryParams: { allowEdit: user.editable },
+});
 ```
 
 - To access the query params
-  
+
 ```ts
-  this.route.snapshot.queryParamMap
+this.route.snapshot.queryParamMap;
 ```
 
 ### Route params or queryParams
@@ -742,12 +881,12 @@ In general, use a required route parameter when the value is mandatory (for exam
 ### Nested routes
 
 - add the components to be rendered as nested routes in `app.module.ts`
-  
+
 ```ts
 // normal route
-path: 'users/:id'
-// the same route, but transformed as nested        
-path: ':id'
+path: 'users/:id';
+// the same route, but transformed as nested
+path: ':id';
 ```
 
 - place `<router-outlet></router-outlet>` in the parent
@@ -758,20 +897,20 @@ path: ':id'
 - two options
   - `merge`
   - `preserve`
-  
+
 ```ts
-  this.route.navigate(['/users'], {queryParamsHandling: 'preserving'})
+this.route.navigate(['/users'], { queryParamsHandling: 'preserving' });
 ```
 
 ### Route guarding
 
 A guard's return value controls the router's behavior:
 
-| GUARD  RETURN VALUE | DETAILS                                                                                                                       |
-|---------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| true                | The navigation process continues                                                                                              |
-| false               | The navigation process stops and the user stays put                                                                           |
-| UrlTree             | The current navigation cancels and a new navigation is initiated to the UrlTree returned <br/> <br/> `router.createUrlTree()` |
+| GUARD RETURN VALUE | DETAILS                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| true               | The navigation process continues                                                                                              |
+| false              | The navigation process stops and the user stays put                                                                           |
+| UrlTree            | The current navigation cancels and a new navigation is initiated to the UrlTree returned <br/> <br/> `router.createUrlTree()` |
 
 You can have multiple guards at every level of a routing hierarchy.
 
@@ -789,7 +928,7 @@ If a canMatch guard returns false, the Router continues processing the rest of t
 
 ### CanActivate
 
-- Write a ***Service*** that implements `CanActivate`
+- Write a **_Service_** that implements `CanActivate`
 - Then, the function `canActivate` will later guard the route
 
 ```ts
@@ -801,13 +940,13 @@ type CanActivateReturnUnit = boolean | UrlTree
 export class AuthGuard implements CanActivate {
 .
 .
-.  
+.
 canActivate(route: ActivatedRouteSnapshot, state:RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit
 
 ```
 
 - Add your route guards to the array `canActivate` from the defined route
-  
+
 ```ts
 {
   path: 'servers', component: ServersComponent, canActivate: [AuthGuardService], title: 'Servers', children: [
@@ -818,7 +957,7 @@ canActivate(route: ActivatedRouteSnapshot, state:RouterStateSnapshot): Observabl
 ```
 
 - Now the route and its children routes will be guarded in the following way:
-  
+
 > If all guards return true, navigation continues.
 >
 > If any guard returns false, navigation is cancelled.
@@ -831,16 +970,16 @@ canActivate(route: ActivatedRouteSnapshot, state:RouterStateSnapshot): Observabl
 
 - Write a class (normally a service) that implements `CanActivateChild`
 - Then, the function `canActivateChild` will later guard the children routes, similarly to `canActivate`
- function
+  function
 
 ```ts
 type CanActivateReturnUnit = boolean | UrlTree
 
-canActivate(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit 
+canActivate(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit
 ```
 
 - Add your route guards to the array `canActivateChild` from the defined route
-  
+
 ```ts
 {
     path: 'servers', component: ServersComponent, canActivateChild: [AuthGuardService], title: 'Servers', children: [
@@ -854,24 +993,36 @@ canActivate(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Obs
 
 - Create a service that implements the `CanDeactivate<T>` interface
   - `T` is an interface that has a function that will be executed when the user trys to leave the route
-  
+
 ```ts
-type CanActivateReturnUnit = boolean | UrlTree
+type CanActivateReturnUnit = boolean | UrlTree;
 
 export interface CanComponentDeactivate {
-  canDeactivate: () => Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit;
+	canDeactivate: () =>
+		| Observable<CanActivateReturnUnit>
+		| Promise<CanActivateReturnUnit>
+		| CanActivateReturnUnit;
 }
 
-export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeactivate> {
-  canDeactivate(component: CanComponentDeactivate, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit {
-    return component.canDeactivate();
-  }
-
+export class CanDeactivateGuardService
+	implements CanDeactivate<CanComponentDeactivate>
+{
+	canDeactivate(
+		component: CanComponentDeactivate,
+		currentRoute: ActivatedRouteSnapshot,
+		currentState: RouterStateSnapshot,
+		nextState?: RouterStateSnapshot
+	):
+		| Observable<CanActivateReturnUnit>
+		| Promise<CanActivateReturnUnit>
+		| CanActivateReturnUnit {
+		return component.canDeactivate();
+	}
 }
 ```
 
 - Now add this service to the array `canDeactivate` from the defined route
-  
+
 ```ts
  {
           path: ':id/edit',
@@ -884,7 +1035,7 @@ export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeac
 - Make sure that your component implement `T`
 - Then create the function defined from `T`
   - This function will be called when the user tries to leave the route
-  
+
 ```ts
 canDeactivate(): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUnit> | CanActivateReturnUnit {
   if ((this.server.name !== this.serverName || this.server.status !== this.serverStatus) && !this.changesSaved) {
@@ -898,23 +1049,21 @@ canDeactivate(): Observable<CanActivateReturnUnit> | Promise<CanActivateReturnUn
 ### Passing `static` data to a route
 
 - Pass the static data to the route definition
-  
+
 ```ts
 {path: 'error', component: PageNotFoundComponent, title: 'Ops', data: {message: 'Page not found'}}
 ```
 
 - Access the data from the route (`ActivatedRoute`)
-  
+
 ```ts
-this.route.snapshot.data.message
+this.route.snapshot.data.message;
 ```
 
 - You can also subscribe to it if your route will reload from within
-  
+
 ```ts
-this.route.subscribe((data: Data) => {
-    
-})
+this.route.subscribe((data: Data) => {});
 ```
 
 ### Resolver: Passing `dynamic` data to a route
@@ -923,19 +1072,20 @@ this.route.subscribe((data: Data) => {
 
 - Create a service that implements `Resolver<T>`
   - `T` is the type definition of what is going to be resolved
-  
+
 ```ts
-type temp = { name: string }
+type temp = { name: string };
 
 export class ServerResolverService implements Resolver<temp> {
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<temp> | Promise<temp> | temp {
-    
-  }
+	resolve(
+		route: ActivatedRouteSnapshot,
+		state: RouterStateSnapshot
+	): Observable<temp> | Promise<temp> | temp {}
 }
 ```
 
 - In the route definition, add the resolve property
-  
+
 ```ts
 {path: 'error', component: PageNotFoundComponent, title: 'Ops', data: {message: 'Page not found'}, resolve: [ServiceResolverService]}
 ```
@@ -967,7 +1117,7 @@ Each routing module augments the route configuration in the order of import. `So
 
 The path is the location of the AdminModule `(relative to the application root)`
 
-When using absolute paths, the NgModule file location must begin with src/app in order to resolve correctly. 
+When using absolute paths, the NgModule file location must begin with src/app in order to resolve correctly.
 
 For custom path mapping with absolute paths, you must configure the baseUrl and paths properties in the project tsconfig.json.
 
@@ -1000,13 +1150,10 @@ In app.module.ts, remove the AdminModule import statement from the top of the fi
 - Simple and effective one
 
 ```ts
-RouterModule.forRoot(
-        appRoutes,
-        {
-          enableTracing: true, // <-- debugging purposes only
-          preloadingStrategy: PreloadAllModules
-        }
-)
+RouterModule.forRoot(appRoutes, {
+	enableTracing: true, // <-- debugging purposes only
+	preloadingStrategy: PreloadAllModules,
+});
 ```
 
 - For a more controlled one, use `Custom Preloading Strategy`
@@ -1017,7 +1164,7 @@ RouterModule.forRoot(
 
 ### Constructs which you subscribe to be informed about changes in data
 
-### Angular makes use of observables as an interface to handle a variety of common *asynchronous operations*. For example
+### Angular makes use of observables as an interface to handle a variety of common _asynchronous operations_. For example
 
 - The HTTP module uses observables to handle AJAX requests and responses
 - The Router and Forms modules use observables to listen for and respond to user-input events
@@ -1083,9 +1230,11 @@ ngOnInit() {
 ### Transforming observable data with `pipe` operator
 
 ```ts
-const transformedIntervalObserver =  customIntervalObserver.pipe(map(data => {
-  return `Count: ${data}`
-}));
+const transformedIntervalObserver = customIntervalObserver.pipe(
+	map(data => {
+		return `Count: ${data}`;
+	})
+);
 ```
 
 ### Remember about the `catchError` operator inside `pipe` operator
@@ -1106,12 +1255,12 @@ Use subjects instead of event emitter for cross component communication
 - Remember to unsubscribe from it
 
 ```ts
-import {Injectable} from "@angular/core";
-import {Subject} from "rxjs";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class UserService {
-    activatedEmitter = new Subject<boolean>();
+	activatedEmitter = new Subject<boolean>();
 }
 ```
 
@@ -1129,7 +1278,7 @@ constructor(private userService: UserService) {}
 ...
 ngOnInit() {
     this.eventSub = this.userService.activatedEmitter.subscribe(data => {
-        
+
     })
 }
 ...
@@ -1147,19 +1296,19 @@ ngOnDestroy() {
 - Give an input two pieces of information
   - `ngModel` directive to tell angular about the inputs you want to control
   - `name`: their representation will be named as the `name` input attribute
-  
+
 ```html
-<input name="myInput" ngModel>
+<input name="myInput" ngModel />
 ```
 
 - On the form tag, add
-  
+
 ```html
-<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm"></form>
 ```
 
 - When the form is submitted, all the inputs will produce an object `where the keys are the name property and the values are the input values`
-  
+
 ```ts
   onSubmit(form: NgForm) {
   console.log(form) // form.value has the values of the inputs
@@ -1209,8 +1358,19 @@ Take advantage of the following dynamically applied css classes:
 - Use the reference and its properties
 
 ```html
-<input type="email" id="email" class="form-control" name="userEmail" ngModel email required  #email='ngModel'>
-<span class="help-block" *ngIf="email.invalid && email.touched">Please enter a valid email</span>
+<input
+	type="email"
+	id="email"
+	class="form-control"
+	name="userEmail"
+	ngModel
+	email
+	required
+	#email="ngModel"
+/>
+<span class="help-block" *ngIf="email.invalid && email.touched"
+	>Please enter a valid email</span
+>
 ```
 
 ### Setting form control default values
@@ -1218,7 +1378,13 @@ Take advantage of the following dynamically applied css classes:
 Use `[ngModel]='string'`
 
 ```html
-<select [ngModel]="'pet'" id="secret" class="form-control" name="secreteQuestion" required>
+<select
+	[ngModel]="'pet'"
+	id="secret"
+	class="form-control"
+	name="secreteQuestion"
+	required
+></select>
 ```
 
 ### Types of biding with `ngModel`
@@ -1237,7 +1403,7 @@ Use `[ngModel]='string'`
 - Create a reference to the ngModelGroup
 
 ```html
-  #referenceIdentifier='ngModelGroup'
+#referenceIdentifier='ngModelGroup'
 ```
 
 - It creates states for the whole group, like `invalid`, `touched`, .etc.
@@ -1263,7 +1429,7 @@ Use `[ngModel]='string'`
 - Import the `ReactiveFormsModule`
 - Assign your form to a formGroup directive as well as the controls
   - `Always type your form group declarations for a better TypeScript support`
-  
+
 ```ts
   signupForm: FormGroup<{
     gender: FormControl<string | null>,
@@ -1283,39 +1449,39 @@ ngOnInit() {
 - Connect the form and the form controls
   - form => directive `[formGroup]`
   - form controls => `formControlName`
-  
+
 ```html
- <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input
-            type="text"
-            id="username"
-            formControlName="username"
-            class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="email">email</label>
-    <input
-            type="text"
-            id="email"
-            formControlName="email"
-            class="form-control">
-  </div>
-  <div class="radio" *ngFor="let gender of genders">
-    <label>
-      <input
-              type="radio"
-              formControlName="gender"
-              [value]="gender">{{ gender }}
-    </label>
-  </div>
-  <button class="btn btn-primary" type="submit">Submit</button>
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+	<div class="form-group">
+		<label for="username">Username</label>
+		<input
+			type="text"
+			id="username"
+			formControlName="username"
+			class="form-control"
+		/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input
+			type="text"
+			id="email"
+			formControlName="email"
+			class="form-control"
+		/>
+	</div>
+	<div class="radio" *ngFor="let gender of genders">
+		<label>
+			<input type="radio" formControlName="gender" [value]="gender" />{{ gender
+			}}
+		</label>
+	</div>
+	<button class="btn btn-primary" type="submit">Submit</button>
 </form>
 ```
 
 - Access the form information as the TD approach
-  
+
 ```ts
  onSubmit() {
     console.log(this.signUpForm)
@@ -1328,66 +1494,87 @@ Use the `get` method
 
 ```html
 <input
-        type="text"
-        id="username"
-        formControlName="username"
-        class="form-control">
-<span *ngIf="signUpForm.get('username').invalid && signUpForm.get('username').touched"
-      class="help-block">Enter a valid username</span>
+	type="text"
+	id="username"
+	formControlName="username"
+	class="form-control"
+/>
+<span
+	*ngIf="signUpForm.get('username').invalid && signUpForm.get('username').touched"
+	class="help-block"
+	>Enter a valid username</span
+>
 ```
 
 ### Form group
 
 - Nest you form group on the file using `formGroup`
-  
+
 ```ts
 this.signUpForm = new FormGroup({
-  'userdata': new FormGroup<{email: FormControl<string | null>, username: FormControl<string | null>}>({
-    'username': new FormControl<string>(null, [Validators.required]),
-    'email': new FormControl<string>(null, [Validators.required, Validators.email]),
-  }),
-  'gender': new FormControl<string>('male')
-})
+	userdata: new FormGroup<{
+		email: FormControl<string | null>;
+		username: FormControl<string | null>;
+	}>({
+		username: new FormControl<string>(null, [Validators.required]),
+		email: new FormControl<string>(null, [
+			Validators.required,
+			Validators.email,
+		]),
+	}),
+	gender: new FormControl<string>('male'),
+});
 ```
 
 - Nest your template using the `formGroupName`
-  
+
 ```html
 <ng-container formGroupName="userdata">
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input
-            type="text"
-            id="username"
-            formControlName="username"
-            class="form-control">
-    <span *ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
-          class="help-block">Enter a valid username</span>
-  </div>
-  <div class="form-group">
-    <label for="email">email</label>
-    <input
-            type="text"
-            id="email"
-            formControlName="email"
-            class="form-control">
-    <span *ngIf="signUpForm.get('userdata.email').invalid && signUpForm.get('userdata.email').touched"
-          class="help-block">Enter a valid email</span>
-  </div>
+	<div class="form-group">
+		<label for="username">Username</label>
+		<input
+			type="text"
+			id="username"
+			formControlName="username"
+			class="form-control"
+		/>
+		<span
+			*ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
+			class="help-block"
+			>Enter a valid username</span
+		>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input
+			type="text"
+			id="email"
+			formControlName="email"
+			class="form-control"
+		/>
+		<span
+			*ngIf="signUpForm.get('userdata.email').invalid && signUpForm.get('userdata.email').touched"
+			class="help-block"
+			>Enter a valid email</span
+		>
+	</div>
 </ng-container>
 ```
 
 - When you want to access a nested form control, use the path separated by a dot
-  
+
 ```html
- <span *ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
-          class="help-block">Enter a valid username</span>
+<span
+	*ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
+	class="help-block"
+	>Enter a valid username</span
+>
 ```
 
 ### Dynamic form controls (`FormArray`)
 
 - On your formGroup, create a field with the constructor `new FormArray()`
-  
+
 ```ts
   this.signupForm = new FormGroup({
   ...
@@ -1396,7 +1583,7 @@ this.signUpForm = new FormGroup({
 ```
 
 - For adding an element, use the push method after casting the control as form array
-  
+
 ```ts
 onAddHobby() {
   (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).push(new FormControl(null, Validators.required))
@@ -1404,7 +1591,7 @@ onAddHobby() {
 ```
 
 - For removing all, use `clear` method
-  
+
 ```ts
 onAddHobby() {
   (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).clear()
@@ -1412,7 +1599,7 @@ onAddHobby() {
 ```
 
 - For removing an element, use `removeAt` method
-  
+
 ```ts
 removeHobby() {
   (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).removeAt(hobbyIndex)
@@ -1420,7 +1607,7 @@ removeHobby() {
 ```
 
 - For getting information about those controls on the template, for a loop for example, use a getter
-  
+
 ```ts
   getHobbiesControls() {
   return (this.signupForm.get('hobbies') as FormArray<FormControl<string | null>>).controls
@@ -1429,21 +1616,26 @@ removeHobby() {
 
 - On the template, give the container of those controls the `formArrayName`,which is the name of this `formArray` dynamic control, to let angular know where those controls will be
   - Also, assign the index of those controls to the `formControlName`
-  
+
 ```html
 <div formArrayName="hobbies">
-  <h3>Hobbies</h3>
-  <button class="btn btn-primary" type="button" (click)="onAddHobby()">Add a hobby</button>
-  <div class="form-group" *ngFor="let hobby of getHobbiesControls(); let controlIndex = index">
-    <input type="text" class="form-control" [formControlName]="controlIndex">
-  </div>
+	<h3>Hobbies</h3>
+	<button class="btn btn-primary" type="button" (click)="onAddHobby()">
+		Add a hobby
+	</button>
+	<div
+		class="form-group"
+		*ngFor="let hobby of getHobbiesControls(); let controlIndex = index"
+	>
+		<input type="text" class="form-control" [formControlName]="controlIndex" />
+	</div>
 </div>
 ```
 
 ## Custom validator `(there is also async validators)`
 
 - Create a functions that when the control value is invalid, return `{errorCode: true}`, and when it's valid, return null
-  
+
 ```ts
   forbiddenNamesValidator(control: AbstractControl): ValidationErrors | null {
 
@@ -1460,23 +1652,33 @@ removeHobby() {
 ```
 
 - Add this validator function in the validators array of the form control
-  
+
 ```ts
-username: new FormControl<string | null>(null, [Validators.required, this.forbiddenNamesValidator.bind(this)])
+username: new FormControl<string | null>(null, [
+	Validators.required,
+	this.forbiddenNamesValidator.bind(this),
+]);
 ```
 
 - Use the validator state to show custom messages
-  
+
 ```html
 <input
-        type="text"
-        id="username"
-        formControlName="username"
-        class="form-control">
-<span *ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
-      class="help-block">Enter a valid username</span>
-<span *ngIf="signUpForm.get('userdata.username').erros.isForbiddenName"
-      class="help-block">This name is forbidden</span>
+	type="text"
+	id="username"
+	formControlName="username"
+	class="form-control"
+/>
+<span
+	*ngIf="signUpForm.get('userdata.username').invalid && signUpForm.get('userdata.username').touched"
+	class="help-block"
+	>Enter a valid username</span
+>
+<span
+	*ngIf="signUpForm.get('userdata.username').erros.isForbiddenName"
+	class="help-block"
+	>This name is forbidden</span
+>
 ```
 
 ### Observables `statusChanges` and `valueChanges`
@@ -1496,14 +1698,14 @@ Used for transforming output on the template (html file)
 - Add your pipe into the declaration module where it should be available
 
 ```ts
-@Pipe({name: 'shorten'})
+@Pipe({ name: 'shorten' })
 export class ShortenPipe implements PipeTransform {
-  transform(value: string, limit = 10): string {
-    if (value.length > limit) {
-      return value.slice(0, limit) + ' ...'
-    }
-    return value
-  }
+	transform(value: string, limit = 10): string {
+		if (value.length > limit) {
+			return value.slice(0, limit) + ' ...';
+		}
+		return value;
+	}
 }
 ```
 
@@ -1532,15 +1734,15 @@ export class ShortenPipe implements PipeTransform {
 - As simple as possible
 - Just remember about setting query params, headers, and interceptors
 - Remember about adding the interceptors in the providers
-  
+
 ```ts
- providers: [
-  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-]
+providers: [
+	{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+];
 ```
 
 ## Dynamic components
-  
+
 ### Old way
 
 ```ts
@@ -1575,7 +1777,7 @@ Check `NgComponentOutlet` at <https://angular.io/guide/dynamic-component-loader>
 - For routing modules, use `forChild` in the newly created routing module
 
 ```ts
-imports: [RouterModule.forChild(routes)]
+imports: [RouterModule.forChild(routes)];
 ```
 
 - You can declare something in the `declarations` only once
@@ -1590,7 +1792,7 @@ imports: [RouterModule.forChild(routes)]
 - Remove module from imports of main module, like app module
   - The imports in the `imports` are eagerly imported, not lazily
 - In the main module routes, declare the module to be lazily imported, like so
-  
+
 ```ts
 {
     path: 'recipes',
@@ -1601,7 +1803,7 @@ imports: [RouterModule.forChild(routes)]
 
 - Start the routes in the lazily imported module as an empty route
   - Because you already declared it in the main module route
-  
+
 ## Unidirectional data flow
 
 A data flow model where the component tree is always checked for changes in one direction from parent to child, which prevents cycles in the change detection graph.
@@ -1621,25 +1823,26 @@ You can use this type of provider to substitute an alternative implementation fo
 In the following example, the BetterLogger class would be instantiated when the Logger dependency is requested in a component or any other class
 
 ```ts
-[{ provide: Logger, useClass: BetterLogger }]
+[{ provide: Logger, useClass: BetterLogger }];
 ```
 
 If the alternative class providers have their own dependencies, specify both providers in the providers metadata property of the parent module or component
 
 ```ts
-[ UserService,  { provide: Logger, useClass: EvenBetterLogger }]
+[UserService, { provide: Logger, useClass: EvenBetterLogger }];
 ```
 
 ```ts
 @Injectable()
 export class EvenBetterLogger extends Logger {
-    
-  constructor(private userService: UserService) { super(); }
+	constructor(private userService: UserService) {
+		super();
+	}
 
-  override log(message: string) {
-    const name = this.userService.user.name;
-    super.log(`Message to ${name}: ${message}`);
-  }
+	override log(message: string) {
+		const name = this.userService.user.name;
+		super.log(`Message to ${name}: ${message}`);
+	}
 }
 ```
 
@@ -1649,14 +1852,16 @@ The useExisting provider key lets you map one token to another
 
 In effect, the first token is an alias for the service associated with the second token, creating two ways to access the same service object
 
-In the following example, the injector injects the singleton instance of NewLogger when the component asks for either the new or the old logger. 
+In the following example, the injector injects the singleton instance of NewLogger when the component asks for either the new or the old logger.
 
 In this way, OldLogger is an alias for NewLogger
 
 ```ts
-[ NewLogger,
-  // Alias OldLogger w/ reference to NewLogger
-  { provide: OldLogger, useExisting: NewLogger}]
+[
+	NewLogger,
+	// Alias OldLogger w/ reference to NewLogger
+	{ provide: OldLogger, useExisting: NewLogger },
+];
 ```
 
 ### `useFactory`
@@ -1676,11 +1881,11 @@ export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 ```
 
 ```ts
-providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }]
+providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }];
 ```
 
 ```ts
-constructor(@Inject(APP_CONFIG) 
+constructor(@Inject(APP_CONFIG)
             config: AppConfig) {
   this.title = config.title;
 }
