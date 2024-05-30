@@ -49,6 +49,87 @@ A class that contains a sequence of chars
 
 StringBuilder class is better suited to string concatenation
 
+Scape sequences
+
+| Scape sequence | Description                     |
+| -------------- | ------------------------------- |
+| \t             | Insert a tab character          |
+| \n             | Insert a new line character     |
+| \\"            | Insert a double quote character |
+| \\             | Insert a backslash character    |
+
+### Text block
+
+- It is a multi-line string literal
+- It has 3 \\"
+- You format the output as you write
+
+```java
+String textBlock = """
+    First line
+    Second line
+    Third line""";
+```
+
+### String format specifiers
+
+`%[argument_index$][flags][width][.precision]conversion`
+
+| Conversion | Argument category |
+| ---------- | ----------------- |
+| s          | string            |
+| d          | integer           |
+| c          | char              |
+| f          | floating point    |
+| n          | new line          |
+| %          | percent           |
+
+- For outputting, use `System.out.printf()`
+- For strings, use `.formatted()` on the string literal
+
+```java
+String something = "Hi. My name is %s. I'm %d years old".formatted("Isaac", 27);
+```
+
+### String methods (over 60)
+
+- Inspection methods
+  - length
+  - charAt
+  - indexOf
+  - lastIndexOf
+  - isEmpty => `returns true if length is zero`
+    - `" ".isEmpty() // returns false`
+  - isBlank => `returns true if length is zero or the string only contains whitespace characters` ⬅️
+    - You normally want to use `isBlack`
+    - `" ".isBlank() // returns true`
+- Comparison methods
+  - contentEquals
+  - equals ⬅️
+  - equalsIgnoreCase ⬅️
+  - contains ⬅️
+  - startsWith
+  - endsWith
+  - regionMatches
+- Manipulation methods
+  - indent => adds or removes spaces
+  - strip ⬅️ use it instead of trim
+  - trim
+  - toLowerCase
+  - toUpperCase
+  - concat
+  - join
+  - repeat
+  - replace
+  - subString
+  - subSequence
+
+### StringBuilder
+
+- Act on the original string
+- You don't need to reassign it
+- It's like the methods from JS that change the original array
+
 ### Method
 
 - A method that doesn't return anything is called a procedure
@@ -65,6 +146,32 @@ StringBuilder class is better suited to string concatenation
   - String
   - enum
 - long, float, double, or boolean and their wrappers can't be used
+
+### var
+
+- `var` is a special contextual keyword in Java that takes advantage of local variable type inference
+- You don't need to assign a type to the variable
+
+### Checking runtime type with `instanceof`
+
+```java
+Object unknown = Movie.getMovie("Title", "Type");
+if (unknown instanceof Advanture) {
+  Advanture unknown = (Advanture) unknown;
+  advanture.showMovie();
+}
+```
+
+### `instanceof` with pattern matching
+
+Creates a local variable correctly typed without casting
+
+```java
+Object unknown = Movie.getMovie("Title", "Type");
+if (unknown instanceof Advanture advanture) {
+  advanture.showMovie();
+}
+```
 
 #### Enhanced switch statements
 
@@ -194,6 +301,7 @@ Fields (component field) are private and final
 ### Encapsulation
 
 - Hiding of fields and some methods from public access
+- Easier to debug, because you know where and when the field was changed
 - Bundling of fields and methods on a single object
 - Normally, the fields are private. So you create getters and setters to handle those fields
 
@@ -219,6 +327,14 @@ Every class and array inherits from `Object`
 
 - It means many forms
 - When a child class overrides a parent class to make a new implementation of a method
+
+### Composition
+
+A class that is made out of other classes
+
+Prefer composition over inheritance
+
+Inheritance breaks encapsulation, because subclasses may need direct access to a parent's state or behavior
 
 ## Java intellij conf
 
