@@ -85,7 +85,7 @@ String textBlock = """
 | %          | percent           |
 
 - For outputting, use `System.out.printf()`
-- For strings, use `.formatted()` on the string literal
+- For strings, use `String.format()` or `.formatted()` on the string literal
 
 ```java
 String something = "Hi. My name is %s. I'm %d years old".formatted("Isaac", 27);
@@ -123,6 +123,10 @@ String something = "Hi. My name is %s. I'm %d years old".formatted("Isaac", 27);
   - replace
   - subString
   - subSequence
+  - split(separator)
+    - Just like in javascript
+  - join(separator, array)
+    - Just like in javascript
 
 ### StringBuilder
 
@@ -250,9 +254,20 @@ You must use the special statement `this()` to execute another constructor, pass
 
 ### Packages
 
+A package is a namespace that organizes a set of related types
+
 Classes can be organized into logical groupings called packages
 
 If you don't declare a package, the class implicitly belongs to the default package
+
+It's a common practice to use the reverse domain name to name a package
+
+```
+company domain name: abccompany.com
+package prefix: com.abccompacny
+```
+
+The package statement needs to be the first in the code, even before the import statements
 
 ### Access modifiers
 
@@ -335,6 +350,159 @@ A class that is made out of other classes
 Prefer composition over inheritance
 
 Inheritance breaks encapsulation, because subclasses may need direct access to a parent's state or behavior
+
+## Arrays
+
+### Declaration
+
+```java
+// type[] arrayName;
+String[] nameList;
+```
+
+### Instantiation
+
+Array isn't resizable; Once instantiated, no more elements can be added;
+
+```java
+int[] integers = new int[10];
+```
+
+### Array initializer
+
+It can only be used in a declaration statement
+
+```java
+int[] integers = {0 ,1 ,2 ,3 ,4 ,5};
+```
+
+### Array methods
+
+See `java.util.Arrays`
+
+- void sort `Arrays.sort(array)`
+- void fill `Arrays.fill(array, value)`
+- array copyOf `Arrays.copyOf(array, length)`
+- int binarySearch `Arrays.binarySearch(array, value)`
+  - Returns the position the match was found; otherwise returns -1
+  - Array has to be sorted!!!
+  - If there are duplicates, there is no guarantee which one it will match on
+  - Elements must be comparable
+- boolean equals `Arrays.equals(array1, array2)`
+- ArrayList<T> `Arrays.asList(T)`
+  - Returns a list that can't be resizable
+  - A change in the list also changes the array
+
+### varargs (just like rest parameters in javascript)
+
+```java
+public printTest(String... strings) {
+  // the list of args passed to printText becomes an array called strings
+  for(String s: strings) {
+    System.out.println(s);
+  }
+}
+```
+
+## Random
+
+Access methods as `random.method`;
+
+```java
+Random random = new Random();
+random.methods;
+```
+
+## List (improvement of arrays)
+
+A List is an interface
+
+### Methods to know
+
+- `List.of(array)`
+  - Return a resizable list from the array
+
+### ArrayList
+
+It's a resizable array that implements the list interface
+
+```java
+ArrayList<GroceryItem> groceryItemArrayList = new ArrayList<>();
+```
+
+```java
+ArrayList<String> namesList = new ArrayList<>(List.of(namesArray));
+```
+
+#### Nice methods
+
+- `contains`
+
+## Boxing and unboxing
+
+From primitive (int) to a wrapper (Integer): boxing
+
+From wrapper (Integer) to primitive (int): unboxing
+
+Each primitive (8 in total) has a wrapper class
+
+If you want a boxed primitive, always prefer to instantiate it by using `Wrapper.valueOf(primitive)`
+
+If you want to primitive value that the wrapper class contains, use:
+`box.intValue()`, `box.booleanValue()`, `box.doubleValue()`, ...
+
+```java
+Integer boxedInt = Integer.valueOf(15);
+```
+
+## Autoboxing and automatic unboxing
+
+`Preferred method!`
+
+Java does the conversion behind the scenes
+
+```java
+Integer boxedInt = 15;
+int unboxedInt = boxedInt;
+```
+
+## Enum type
+
+An enum is a data type that contains predefined constants
+
+In its simplest form, an enum is described like a class, but the keyword `enum` replaces the keyword class
+
+The enum name should be in Upper CamelCase
+
+Each identifier is separated by commas
+
+The identifiers should be in uppercase label
+
+```java
+public enum DaysOfTheWeek {
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY
+  FRIDAY
+  SATURDAY,
+  SUNDAY
+}
+```
+
+### Built-in methods
+
+- `identifier` gets the value
+- `identifier.name()` gets the value
+- `identifier.ordinal` gets the position
+- `Enum.values()` gets the values as an array
+
+### Custom methods
+
+- End the last identifier with a semicolon
+- Return the information for each field using `switch(this)`
+
+## Abstraction
 
 ## Java intellij conf
 
