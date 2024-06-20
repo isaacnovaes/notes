@@ -424,14 +424,16 @@ A List is an interface
 
 ### ArrayList
 
+`Use the type List<T> for the reference value`
+
 It's a resizable array that implements the list interface
 
 ```java
-ArrayList<GroceryItem> groceryItemArrayList = new ArrayList<>();
+List<GroceryItem> groceryItemArrayList = new ArrayList<>();
 ```
 
 ```java
-ArrayList<String> namesList = new ArrayList<>(List.of(namesArray));
+List<String> namesList = new ArrayList<>(List.of(namesArray));
 ```
 
 #### Nice methods
@@ -600,6 +602,37 @@ The interface decouples the "what", from the "how", and is used to make differen
 - you can use any of the four access modifiers for its concrete methods
 - You can also use all but the private access modifier for its abstract methods
 - An abstract class can extend only one parent class, but it can implement multiple interfaces
+
+## Generics
+
+### Generic class
+
+```java
+class YouTellMe<T> {
+  private T field;
+}
+```
+
+### Conventions
+
+- E for Element (used extensively by the Java Collections Framework)
+- K for Key (used for mapped types)
+- N for Number
+- T for Type
+- V for Value
+- S, U, V etc, for 2nd, 3rd, 4th types
+
+### Keyword `extends
+
+Fine-grained control over the type parameter, just like in TS
+
+It defines the `upper bound` for the types that are allowed
+
+```java
+public class Team<T extends TeamMember>
+```
+
+When the upper bound is not defined, the default is java.lang.Object, so `try to use it when possible`
 
 ## Java intellij conf
 
