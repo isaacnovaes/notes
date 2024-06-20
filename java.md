@@ -494,7 +494,7 @@ public enum DaysOfTheWeek {
 
 - `identifier` gets the value
 - `identifier.name()` gets the value
-- `identifier.ordinal` gets the position
+- `identifier.ordinal()` gets the position
 - `Enum.values()` gets the values as an array
 
 ### Custom methods
@@ -503,6 +503,103 @@ public enum DaysOfTheWeek {
 - Return the information for each field using `switch(this)`
 
 ## Abstraction
+
+### abstract class
+
+It's said to be incomplete
+
+You can create an instance of an abstract class
+
+It can have a constructor which will then be called by subclasses
+
+It's used when you want to define a certain structure to be implemented by subclasses
+
+`An abstract class can also have concrete methods`
+
+```java
+abstract class Animal {}
+```
+
+### abstract method
+
+it can only be declared in an abstract method or interface
+
+it has a method signature and a return type, but doesn't have a body
+
+it's an unimplemented method
+
+`then a concrete method implements the abstract method by overriding it`
+
+```java
+abstract class Animal {
+  public abstract void move();
+}
+```
+
+## Interface
+
+```java
+public interface FlightEnabled {}
+```
+
+```java
+public class Bird implements FlightEnabled {}
+```
+
+An interface is similar to an abstract class, but it's not a class
+
+It's a especial type that's more like a contract between the class and the client code
+
+It let us take objects that may have almost nothing is common and write reusable code so we can process them in a like manner
+
+By using an interface, the class must implement all the abstract methods
+
+Use the interface keyword
+
+The class `implements` the interface
+
+An interface can't implement another interface, but it can extend from it
+
+A class can implement many interfaces, while it can extend only one class
+
+Records and enums can implement an interface
+
+### The default behavior for an interface
+
+- `abstract` for the interface itself
+- unimplemented methods to be `public and abstract`
+- fields to be `public static final`
+  - It's a constant
+
+After JDK8, you can change it by adding modifiers to fields and methods of the interface
+
+It's helpful because a change to the interface forces a change to all classes implementing it
+
+- `default`
+  - defines a concrete method
+  - it must have a method body
+  - it can be overridden by who will implement the interface
+  - it doesn't brake classes currently implementing the interface
+
+Whenever you call the default method from the overridden method, you need to qualify super with the interface type
+
+### Other options for access modifiers in interfaces
+
+- static
+- private
+
+## Abstract class vs Interface
+
+An abstract class provides a common definition, as a base class, that multiple, derived classes can share
+
+The interface decouples the "what", from the "how", and is used to make different types, behave in similar ways
+
+### Abstract class
+
+- you can declare fields that aren't static and final, instance fields in other words
+- you can use any of the four access modifiers for its concrete methods
+- You can also use all but the private access modifier for its abstract methods
+- An abstract class can extend only one parent class, but it can implement multiple interfaces
 
 ## Java intellij conf
 
