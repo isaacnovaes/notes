@@ -634,6 +634,35 @@ public class Team<T extends TeamMember>
 
 When the upper bound is not defined, the default is java.lang.Object, so `try to use it when possible`
 
+## Comparable interface
+
+The classes implementing it should have a method `val.compareTo(T o)`
+
+It returns zero if `val` is equal
+
+It returns a positive value if `val` is greater
+
+It returns a negative value if `val` is smaller
+
+Built-in wrappers implement it
+
+String implement it by looking at the first characters. If they are the same, the second characters are compared. For comparison, they use the characters ASCI code int value
+
+### Making classes comparable
+
+```java
+ class myClass implements Comparable<myClass> {
+  // 1 arg to compare
+ }
+```
+
+## Comparator
+
+```java
+class myClass implements Comparator<myClass> {
+  // 2 args to compare
+}
+
 ## Java intellij conf
 
 - Editor > general >
