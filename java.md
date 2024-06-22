@@ -634,9 +634,20 @@ public class Team<T extends TeamMember>
 
 When the upper bound is not defined, the default is java.lang.Object, so `try to use it when possible`
 
+### Generic methods in non-generic class
+
+Use an slot for `T` before the function return type
+
+```java
+public static <T extends Student> void printList(List<T> students) {
+  students.forEach(System.out::println);
+  System.out.println();
+}
+```
+
 ## Comparable interface
 
-The classes implementing it should have a method `val.compareTo(T o)`
+The classes implementing it should have a method `int compareTo(T o)`
 
 It returns zero if `val` is equal
 
@@ -658,10 +669,21 @@ String implement it by looking at the first characters. If they are the same, th
 
 ## Comparator
 
+You create a class that implements `Comparator<myClass>`
+
+Then you use this class where it's needed
+
+For example, with `Arrays.sort(T[] array, Comparator<T> new myComparator())`
+
+It doesn't require the `T` to implement `Comparator`
+
 ```java
-class myClass implements Comparator<myClass> {
-  // 2 args to compare
+class myComparator implements Comparator<myClass> {
+  // implement the methods you need
 }
+...
+Arrays.sort(array, new myComparator())
+```
 
 ## Java intellij conf
 
