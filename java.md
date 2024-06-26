@@ -622,7 +622,7 @@ class YouTellMe<T> {
 - V for Value
 - S, U, V etc, for 2nd, 3rd, 4th types
 
-### Keyword `extends
+### Keyword `extends`
 
 Fine-grained control over the type parameter, just like in TS
 
@@ -634,6 +634,16 @@ public class Team<T extends TeamMember>
 
 When the upper bound is not defined, the default is java.lang.Object, so `try to use it when possible`
 
+### Passing many upper bounds
+
+```java
+public class Team<T extends TeamMember & QueryItem>
+```
+
+- You can use extend for only one class
+  - Class must be the first one listed
+- You can pass as many interfaces as possible after `&` character
+
 ### Generic methods in non-generic class
 
 Use an slot for `T` before the function return type
@@ -643,6 +653,38 @@ public static <T extends Student> void printList(List<T> students) {
   students.forEach(System.out::println);
   System.out.println();
 }
+```
+
+### Generic wildcards (type parameter wildcard)
+
+A wildcard can be used only in a `type parameter`, not in the type parameter declaration (when declaring a variable for example)
+
+It cannot be used while instantiating a class
+
+It's represented by the `?` character
+
+It means the type is `unknown`
+
+It can be unbounded, upper bounded or lowe bounded
+
+- unbounded: `List<?>`
+- upper bounded `List<? extends Student`
+  - A list containing any type that is a Student or a class that extends from Student (sub type of Student)
+- lowe bounded `List<? super LPAStudent>`
+  - A list containing any type that is an LPAStudent or classes that LPAStudent inherits from, for example Student and Object (supper type of LPAStudent)
+
+## Type Erasure
+
+At compile time, everywhere a type parameter is used in a class, `it gets replaced with either the type Object, if no upper bound was specified, or the upper bound type itself`
+
+This transformation process is called type erasure, because the T parameter (or S, U, V) is erased or replaced with the true type
+
+When encountering type erasure problems, define an upper bound or handle different possibilities inside the function
+
+## Manually passing type parameters to a function call
+
+```java
+QueryList.<Student>getMatches(students, "COURSE", "JAVA");
 ```
 
 ## Comparable interface
@@ -681,9 +723,23 @@ It doesn't require the `T` to implement `Comparator`
 class myComparator implements Comparator<myClass> {
   // implement the methods you need
 }
-...
-Arrays.sort(array, new myComparator())
+.
+.
+.
+Arrays.sort(array, new myComparator());
+Arrays.sort(array, new myComparator().reversed());
 ```
+
+## Nested classes
+
+| Type                    | Desc                                                                                                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| static nested class     | - declared in class body <br/> - just like a static field <br/> - access to this class is through the Class name identifier <br/> `var comparator = new Employee.EmployeeComparator<>()` <br/> - can access private attributes on the outer class |
+| instance or inner class | - declared in class body <br/> - can only be accessed through an instance of the outer class <br/> - can access private attributes on the outer class <br/> `var comparator = new StoreEmployee().new StoreComparator<>()`                        |
+| local class             | - declared within a method body <br> - don't have access modifier <br> - can access private attributes on the outer class                                                                                                                         |
+| anonymous class         | unnamed class, declared and instantiated in same statement                                                                                                                                                                                        |
+
+## Lambda expressions
 
 ## Java intellij conf
 
