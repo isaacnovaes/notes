@@ -134,6 +134,19 @@ String something = "Hi. My name is %s. I'm %d years old".formatted("Isaac", 27);
 - You don't need to reassign it
 - It's like the methods from JS that change the original array
 
+#### Instantiating StringBuilder
+
+4 ways: string literal, nothing, int, another StringBuilder
+
+```java
+StringBuilder helloBuilder = new StringBuilder("Hello");
+StringBuilder emptyBuilder = new StringBuilder();
+StringBuilder emptyBuilder5 = new StringBuilder(5); // capacity of maximum length 5; default is 16
+StringBuilder stringBuilder = new StringBuilder(helloBuilder);
+```
+
+It has a method to reverse a string
+
 ### Method
 
 - A method that doesn't return anything is called a procedure
@@ -419,8 +432,10 @@ A List is an interface
 
 ### Methods to know
 
-- `List.of(array)`
-  - Return a resizable list from the array
+- `List.of(array)`, `List.of(comma-separated-values)`
+  - Return a resizable list from the input
+- `List.copyOf(List)`
+  - Return a copy of the input list
 
 ### ArrayList
 
@@ -732,14 +747,140 @@ Arrays.sort(array, new myComparator().reversed());
 
 ## Nested classes
 
-| Type                    | Desc                                                                                                                                                                                                                                              |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| static nested class     | - declared in class body <br/> - just like a static field <br/> - access to this class is through the Class name identifier <br/> `var comparator = new Employee.EmployeeComparator<>()` <br/> - can access private attributes on the outer class |
-| instance or inner class | - declared in class body <br/> - can only be accessed through an instance of the outer class <br/> - can access private attributes on the outer class <br/> `var comparator = new StoreEmployee().new StoreComparator<>()`                        |
-| local class             | - declared within a method body <br> - don't have access modifier <br> - can access private attributes on the outer class                                                                                                                         |
-| anonymous class         | unnamed class, declared and instantiated in same statement                                                                                                                                                                                        |
+| Type                    | Desc                                                                                                                                                                                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| static nested class     | - declared in class body <br/> - just like a static field <br/> - access to this class is through the Class name identifier <br/> `var comparator = new Employee.EmployeeComparator<>()` <br/> `record Person(String firstName, String lastName){};` <br/> - can access private attributes on the outer class |
+| instance or inner class | - declared in class body <br/> - can only be accessed through an instance of the outer class <br/> - can access private attributes on the outer class <br/> `var comparator = new StoreEmployee().new StoreComparator<>()`                                                                                    |
+| local class             | - declared within a method body <br> - don't have access modifier <br> - can access private attributes on the outer class                                                                                                                                                                                     |
+| anonymous class         | unnamed class, declared and instantiated in same statement                                                                                                                                                                                                                                                    |
 
 ## Lambda expressions
+
+### Functional interface (creating your lambda)
+
+The annotation `@FunctionalInterface` marks an interface that should have only one abstract method, being the target for lambda expression
+
+- If you use a type for an arguments, all the other ones should also have a type argument
+- If you use var to one argument, the other ones should have var as well
+
+```java
+@FunctionalInterface
+public interface Operation<T> {
+    T operate(T value1, T value2);
+}
+...
+public static <T> T calculator(Operation<T> function, T value1, T value2) {
+      T result = function.operate(value1, value2);
+      System.out.println("Result of operation: " + result);
+      return result;
+  }
+...
+   int result = calculator((a, b) -> a + b, 5, 10);
+```
+
+### Consumer
+
+| Interface name | Method signature        |
+| -------------- | ----------------------- |
+| Consumer       | `void accept(T t)`      |
+| BiConsumer     | `void accept(T t, U u)` |
+
+### Predicate
+
+| Interface name | Method signature         |
+| -------------- | ------------------------ |
+| Predicate      | `boolean test(T t)`      |
+| BiPredicate    | `boolean test(T t, U u)` |
+
+### Function
+
+| Interface name | Method signature    |
+| -------------- | ------------------- |
+| Function       | `R test(T t)`       |
+| BiFunction     | `R test(T t, U u)`  |
+| UnaryOperator  | `T test(T t)`       |
+| BinaryOperator | `T test(T t, T t2)` |
+
+### Supplier
+
+| Interface name | Method signature |
+| -------------- | ---------------- |
+| Supplier       | `T get(T t)`     |
+
+### Extra function interface methods for Predicate
+
+- andThen()
+- compose(a)
+  - apply first a, then the caller
+- or()
+- and()
+- negate()
+
+### Comparator static methods for sorting
+
+- Comparator.comparing(Function keyExtractor)
+- Comparator.thenComparing(Function keyExtractor)
+- Comparator.comparing(Comparator other)
+- Comparator.reversed()
+
+```java
+List<Person> people = new ArrayList<>(List.of(
+  new Person("Isaac", "Novaes"),
+  new Person("Isael", "Novaes"),
+  new Person("Elias", "Tome"),
+  new Person("Miriam", "Neres"),
+  new Person("Patrycja", "Novaes")
+));
+
+people.sort(Comparator.comparing(Person::lastName).thenComparing(Person::firstName).reversed());
+System.out.println(people);
+```
+
+### Usage
+
+```java
+FunctionInterfaceName<T> name = () -> {};
+
+name.method();
+```
+
+### Method reference
+
+Alternative syntax for named methods
+
+| Lambda expression          | Method reference    |
+| -------------------------- | ------------------- |
+| s -> System.out.println(s) | System.out::println |
+
+When you create variables that are lambda expressions or method references, it's important to remember that the code isn't invoked at that point
+
+The code gets invoked at th point int the code that the target functional method is called
+
+### Type reference
+
+It's the name of a class, interface, enum, or record
+
+## Collection
+
+A collection is just an object that represents a group of objects
+
+Collection objects, in many languages, include arrays, lists, vectors, sets, queues, tables, dictionaries, and maps
+
+In java, array and Arrays are not part of the Collection framework
+
+![Collections framework](collections-framework.png)
+
+### Methods
+
+- `Collections.shuffle()`
+- `Collections.reverse()`
+- `Collections.disjoint(list1, list2)`
+  - Returns true if the two inputs have nothing in common
+- `Collections.frequency(list, list2)`
+  - Returns that integer amount of list2 in list1
+- `Collections.min()` and `Collections.max()`
+- `Collections.swap(list, elementIndex, otherElementIndex)`
+- `Collections.reverse(list)`
 
 ## Java intellij conf
 
@@ -749,3 +890,4 @@ Arrays.sort(array, new myComparator().reversed());
   - code folding >
     - General > unselect file header and imports
     - Java > unselect one-line methods, closures, and generic constructors and method parameters
+  - Gutter icons > Java > Lambda
