@@ -513,6 +513,7 @@ public enum DaysOfTheWeek {
 - `identifier.name()` gets the value
 - `identifier.ordinal()` gets the position
 - `Enum.values()` gets the values as an array
+- `Enum.valueOf()` useful for casting
 
 ### Custom methods
 
@@ -714,7 +715,7 @@ It returns a negative value if `val` is smaller
 
 Built-in wrappers implement it
 
-String implement it by looking at the first characters. If they are the same, the second characters are compared. For comparison, they use the characters ASCI code int value
+String implements it by looking at the first characters. If they are the same, the second characters are compared. For comparison, they use the characters ASCI code int value
 
 ### Making classes comparable
 
@@ -723,6 +724,8 @@ String implement it by looking at the first characters. If they are the same, th
   // 1 arg to compare
  }
 ```
+
+For a function that expects a comparator, if you pass null, it will use the `compareTo` method that the class itself implements
 
 ## Comparator
 
@@ -816,7 +819,7 @@ public static <T> T calculator(Operation<T> function, T value1, T value2) {
 - and()
 - negate()
 
-### Comparator static methods for sorting
+### `Comparator static methods for sorting`
 
 - Comparator.comparing(Function keyExtractor)
 - Comparator.thenComparing(Function keyExtractor)
@@ -878,9 +881,35 @@ In java, array and Arrays are not part of the Collection framework
   - Returns true if the two inputs have nothing in common
 - `Collections.frequency(list, list2)`
   - Returns that integer amount of list2 in list1
-- `Collections.min()` and `Collections.max()`
+- `Collections.min(list, Comparator.comparing())` and `Collections.max(list, Comparator.comparing())`
 - `Collections.swap(list, elementIndex, otherElementIndex)`
-- `Collections.reverse(list)`
+- `Collections.rotate(list, position)`
+- `Collections.nCopies(number, object)`
+  - Returns an immutable list consisting of n copies of the specified object
+  - Useful to fill an empty list and then work on that list like with replaceAll, addAll, etc.
+
+## Set
+
+- It's not implicitly ordered
+- It contains no duplicates
+- It may contain a single null element
+- Operations on them are fast
+
+## HashSet
+
+- Sets are unique because they don't support duplicates
+- Adding an element has the cost of first checking for a match O(n)
+  - `Hashing reduces this cost`
+- `Duplicates are determined by firstly hashCode then by equals method`
+- There is not a method to get an element, you have to loop through it and select it manually
+- With `retainAll, removeAll, addAll, and containAll methods` it's possible to perform set operation
+
+```java
+List<String> hellos = Arrays.asList("Hello", "Hello", "hello");
+Set<String> mySet = new HashSet<>(hellos);
+```
+
+`If you use classes with Collections, override the hashCode and equals methods`
 
 ## Java intellij conf
 
