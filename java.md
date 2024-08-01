@@ -86,6 +86,7 @@ String textBlock = """
 
 - For outputting, use `System.out.printf()`
 - For strings, use `String.format()` or `.formatted()` on the string literal
+- Use `1
 
 ```java
 String something = "Hi. My name is %s. I'm %d years old".formatted("Isaac", 27);
@@ -429,6 +430,8 @@ random.methods;
 ## List (improvement of arrays)
 
 A List is an interface
+
+`Ordered by insertion order`
 
 ### Methods to know
 
@@ -903,6 +906,7 @@ In java, array and Arrays are not part of the Collection framework
 - `Duplicates are determined by firstly hashCode then by equals method`
 - There is not a method to get an element, you have to loop through it and select it manually
 - With `retainAll, removeAll, addAll, and containAll methods` it's possible to perform set operation
+- O(1) for operations
 
 ```java
 List<String> hellos = Arrays.asList("Hello", "Hello", "hello");
@@ -910,6 +914,56 @@ Set<String> mySet = new HashSet<>(hellos);
 ```
 
 `If you use classes with Collections, override the hashCode and equals methods`
+
+## LinkedSet
+
+- Extends HashSet
+- It maintains the insertion order
+
+```java
+Set<String> mySet = new LinkedSet<>(hellos);
+```
+
+## TreeSet
+
+- Sorted by the natural order of the elements or by specifying the sort during the set creation
+  - You can pass a sort to the constructor
+- O(log n) for add, remove, and contains
+- For typing, use the interface
+
+```java
+NavigableSet<Seat> seats = new TreeSet();
+```
+
+## Map
+
+- Elements are stored with keyed references
+- It can't contain duplicate keys
+- Each key maps to a single value
+
+```java
+interface Map<K, V>
+```
+
+## Map implementations
+
+- HashMap is unordered
+- LinkedHashMap is ordered by insertion order
+- TreeMap is a sorted map
+
+## Map methods
+
+- put(key, value) always inserts an element in the map
+  - If the element already existed, it is substituted by the last value
+  - it returns null if there is no duplicate
+  - it returns the element if there is a duplicate
+- putIfAbsent(key, value) doesn't add the value if it already exists
+- merge(key, value, (previous, current -> { return value;})) adds and merges the value unifying it in a unique key
+- get returns the value by using the key
+- getOrDefault(key, defaultValue) returns a default value if no value found
+- compute(key, (key, value) -> {}) runs thorough values and return something new
+- computeIfPresent(key, (key, value) -> {})
+- computeIfAbsent(key, (key) -> {})
 
 ## Java intellij conf
 
