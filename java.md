@@ -940,6 +940,7 @@ NavigableSet<Seat> seats = new TreeSet();
 - Elements are stored with keyed references
 - It can't contain duplicate keys
 - Each key maps to a single value
+- The keys are unique, but the values are not
 
 ```java
 interface Map<K, V>
@@ -964,6 +965,19 @@ interface Map<K, V>
 - compute(key, (key, value) -> {}) runs thorough values and return something new
 - computeIfPresent(key, (key, value) -> {})
 - computeIfAbsent(key, (key) -> {})
+
+## Collection views
+
+Any change on it also changes the collection passed to the collection view, and vice-versa
+
+That's why you can perform remove or retail actions, but you can't perform add operations
+
+- Arrays.asList
+- Map.keySet
+- Map.entrySet
+- Map.values
+
+`When you pass data to a data structure constructor, you get a copy, not a view`
 
 ## Java intellij conf
 
