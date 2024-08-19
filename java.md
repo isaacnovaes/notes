@@ -950,7 +950,9 @@ interface Map<K, V>
 
 - HashMap is unordered
 - LinkedHashMap is ordered by insertion order
+  - `Map<String> myMap = new LinkedHashMap<>(hellos);`
 - TreeMap is a sorted map
+  - `NavigableMap<String> myMap = new TreeMap<>(hellos);`
 
 ## Map methods
 
@@ -976,6 +978,16 @@ That's why you can perform remove or retail actions, but you can't perform add o
 - Map.keySet
 - Map.entrySet
 - Map.values
+- TreeMap.descendingKeySet (reversed order)
+- TreeMap.descendingKeyMap (reversed order)
+- TreeMap.headMap(K key)
+  - Default is EXCLUSIVE
+  - Provide views of all elements higher or equal to the key
+- TreeMap.headMap(K key, boolean inclusive)
+- TreeMap.tailMap(K key)
+  - Default is INCLUSIVE
+  - Provide views of all elements higher or equal to the key
+- TreeMap.tailMap(K key, boolean inclusive)
 
 `When you pass data to a data structure constructor, you get a copy, not a view`
 
