@@ -49,6 +49,10 @@ A class that contains a sequence of chars
 
 StringBuilder class is better suited to string concatenation
 
+Better suited when you need to create many string objects
+
+StringBuilder is an mutable object
+
 Scape sequences
 
 | Scape sequence | Description                     |
@@ -406,6 +410,7 @@ See `java.util.Arrays`
 - ArrayList<T> `Arrays.asList(T)`
   - Returns a list that can't be resizable
   - A change in the list also changes the array
+- T setAll `Arrays.setAll(array, Consumer)`
 
 ### varargs (just like rest parameters in javascript)
 
@@ -497,6 +502,12 @@ The enum name should be in Upper CamelCase
 Each identifier is separated by commas
 
 The identifiers should be in uppercase label
+
+Enum constructor is private, so you cannot instantiate it
+
+You can also define noArgsConstructor to define default values
+
+You can also defined initializers for each enum field
 
 ```java
 public enum DaysOfTheWeek {
@@ -990,6 +1001,83 @@ That's why you can perform remove or retail actions, but you can't perform add o
 - TreeMap.tailMap(K key, boolean inclusive)
 
 `When you pass data to a data structure constructor, you get a copy, not a view`
+
+## Mutable vs Immutable
+
+- Immutable: an object whose internal state remains constant
+- Mutable: an object whose internal state does not remain constant
+
+## final identifier
+
+When you use final, it doesn't mean the variable is immutable
+
+It means you can't reassign it to a new instance, variable, or expression after the initialization
+
+If you use final for method parameters, this means you cannot assign any values to the method parameters in the code
+
+- on methods, prevent subclasses to override it
+  - For example when you want to block polymorphism of a method which is not private
+- on static methods, prevent subclasses to hide it
+- on variables, make it immutable
+- on classes, make it not extendable
+
+## Controlling change
+
+- For instance fields, access modifiers
+- For methods, don't allow override (use final) or hide functionality
+- For classes, prevent it from being extended (use final) or from being instantiated
+
+### Immutable classes
+
+- make instance fields private and final
+- do not define any setter methods
+- create defensive copies in any getters
+- use a constructor or factory method to set data, making copies of mutable reference data
+- mark the class final, or make constructors private
+
+### Shallow vs Deep copies
+
+Take an array, collection, or even objects whose fields are objects whose elements are also array
+
+- Shallow copy: the copy array has a different reference, but the elements have the same reference
+- Deep copy: the copy array and the copy array elements have a different reference
+
+Deep copy methods have to be manually created
+
+### Unmodifiable collections vs Immutable collections
+
+- Unmodifiable
+  - You cannot remove, add, or clear elements from it
+  - You cannot sort or replace elements
+  - This collections cannot have null elements
+  - Example: `LIst.copyOf(), List.copy(), Set.copyOf(), Set.copy(), Map.copyOf(), Map.copy(), Map.ofEntries(), Map.entry(k, v)`
+
+## Instance initializer
+
+- An initializer is a block of code declared directly in a class body
+- This code is executed when an instance of the class is created
+- Instance initializers are executed, before any code in class constructors is executed, except field initializers
+- Multiple initializer blocks are executed in the order they are declared
+
+## Static initializer
+
+- Called the first time a class is referenced or constructed
+- They can be declared anywhere ins the class body
+- Multiple initializer blocks are executed in the order they are declared
+
+## Record constructors
+
+- Compact constructor
+  - it has no parameters
+  - you cannot have both a compact and an explicit canonical constructor
+  - it has access to all arguments from the canonical constructor
+  - it runs before the canonical constructor
+- Canonical constructor
+  - it implicitly gets generated
+  - it assigns all the fields
+- Custom constructor
+  - overloaded constructor
+  - it must call the canonical constructor first
 
 ## Java intellij conf
 
