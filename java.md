@@ -256,6 +256,8 @@ The default constructor has no args (no-args constructor)
 
 If a class has any other constructor, then de default one is not implicitly declared
 
+A `private` constructor makes the class not extendable and makes it impossible to instantiate it
+
 #### Constructor overloading
 
 It's the same than function overloading, but for constructors
@@ -1020,6 +1022,7 @@ If you use final for method parameters, this means you cannot assign any values 
 - on static methods, prevent subclasses to hide it
 - on variables, make it immutable
 - on classes, make it not extendable
+  - Enum and records are final classes
 
 ## Controlling change
 
@@ -1078,6 +1081,28 @@ Deep copy methods have to be manually created
 - Custom constructor
   - overloaded constructor
   - it must call the canonical constructor first
+
+## Streams
+
+Intermediate operation returns a stream
+
+Intermediate computation is lazy
+
+Streams are only computed when an terminal operation is run
+
+After the pipeline is finished, the stream cannot reuse it for a new source
+
+### Converting to streams
+
+- Collections have `.stream()`
+- Arrays: `Arrays.stream()`
+- Maps: `myMap.entrySet().stream()`
+- `Stream.of(...values)`
+
+### Methods
+
+- `Stream.concat(...streams)`
+  - Process streams
 
 ## Java intellij conf
 
