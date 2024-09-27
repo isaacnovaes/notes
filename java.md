@@ -1099,10 +1099,47 @@ After the pipeline is finished, the stream cannot reuse it for a new source
 - Maps: `myMap.entrySet().stream()`
 - `Stream.of(...values)`
 
-### Methods
+### Stream generation methods
+
+`.iterate() (one signature, the other doesn't)` and `.generate()` produce infinite infinite streams, so be careful with memory leaks
+
+- `Stream.iterate(initialValue, conditionToContinue, generateNext)`
+- `Stream.iterate(initialValue, generateNext)`
+  - Produces infinite stream
+- `Stream.generate(() -> T)`
+  - generate a stream of values
+  - use `.limit` to stop the generation when a terminal operation is done
+- `IntStream`
+  - generate a sequence of ints
+- `LongStream`
+  - generate a sequence of longs
+- `DoubleStream`
+  - generate a sequence of doubles
+
+### Stream methods
 
 - `Stream.concat(...streams)`
-  - Process streams
+
+  - process multiple streams
+
+- `.limit()`
+  - limit the number processing elements of the stream
+- `filter()`
+- `takeWhile()`
+- `dropWhile()`
+- `skip(n)`
+  - skit the first n elements
+- `map()`
+- `mapToDouble()`, `mapToInt()`, `mapToLong()` transforms into => DoubleStream, IntStream, LongStream
+  - Faster for those types of numbers
+  - Then to return a new stream from them use `mapToObj()` or `boxed(0)`
+    - transforms from DoubleStream, IntStream, LongStream into Stream<Double>, Stream<Int>, Stream<Long>
+- `peak()`
+  - just like tap in rxjs
+- `sorted()` and `sorted(Comparator)`
+- `distinct()`
+  - Removes duplicate values
+- 
 
 ## Java intellij conf
 
