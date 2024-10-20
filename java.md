@@ -1095,7 +1095,7 @@ After the pipeline is finished, the stream cannot reuse it for a new source
 ### Converting to streams
 
 - Collections have `.stream()`
-- Arrays: `Arrays.stream()`
+- Arrays: `Arrays.stream(array)`
 - Maps: `myMap.entrySet().stream()`
 - `Stream.of(...values)`
 
@@ -1116,30 +1116,165 @@ After the pipeline is finished, the stream cannot reuse it for a new source
 - `DoubleStream`
   - generate a sequence of doubles
 
-### Stream methods
+### Stream Operations in Java
+
+In Java, **Stream API** operations can be classified into two types: **intermediate** and **terminal** operations
+
+#### 1. Intermediate Operations
+
+Intermediate operations return a new stream and are typically used to transform or filter data without triggering the actual processing.
+
+These operations are lazy, meaning they only get executed when a terminal operation is invoked.
+
+- **`filter(Predicate<T>)`**  
+  Filters elements based on a given predicate
+- **`map(Function<T, R>)`**  
+  Transforms each element in the stream using the provided function
+- **`flatMap(Function<T, Stream<R>>)`**  
+  Transforms each element into a stream and flattens the result
+  Just like flatMap from JS, but for streams
+- **`distinct()`**  
+  Removes duplicate elements
+- **`sorted()`**  
+  Sorts the elements in natural order or by a custom comparator
+- **`sorted(Comparator<T>)`**  
+  Sorts the elements using a comparator
+- **`peek(Consumer<T>)`**  
+  Performs an action for each element, mainly used for debugging
+- **`limit(long maxSize)`**  
+  Truncates the stream to contain no more than `maxSize` elements
+- **`skip(long n)`**  
+  Skips the first `n` elements and returns a stream consisting of the remaining elements
+
+#### 2. Terminal Operations
+
+Terminal operations trigger the actual processing of the stream and return a result or side effect (e.g., a collection, a primitive, or an optional value)
+
+- **`forEach(Consumer<T>)`**  
+  Performs an action for each element in the stream.
+- **`forEachOrdered(Consumer<T>)`**  
+  Similar to `forEach`, but maintains the encounter order of the stream
+- **`toArray()`**  
+  Converts the elements in the stream into an array
+- **`toList()`**
+  Coverts the elements in the stream into a list
+- **`collect(Collector<T, A, R>)`**  
+  Collects the elements into a collection or another type of result like a `List`, `Set`, or `Map`
+- **`reduce(BinaryOperator<T>)`**  
+  Reduces the elements of the stream into a single value using an associative accumulator function, wrapped in an `Optional`
+- **`reduce(T identity, BinaryOperator<T>)`**  
+  Reduces the elements into a single value with an initial value and a binary operation
+- **`min(Comparator<T>)`**  
+  Finds the minimum element based on a comparator, wrapped in an `Optional`
+- **`max(Comparator<T>)`**  
+  Finds the maximum element based on a comparator, wrapped in an `Optional`
+- **`count()`**  
+  Returns the count of elements in the stream
+- **`anyMatch(Predicate<T>)`**  
+  Checks if any element matches the given predicate
+- **`allMatch(Predicate<T>)`**  
+  Checks if all elements match the given predicate
+- **`noneMatch(Predicate<T>)`**  
+  Checks if no elements match the given predicate
+- **`findFirst()`**  
+  Returns the first element in the stream, wrapped in an `Optional`
+- **`findAny()`**  
+  Returns any element from the stream, often used in parallel processing, wrapped in an `Optional`
+- `For IntStream, LongStream, and DoubleStream`, **`summaryStatistics`**
+  Returns the summary in the shape of `count()`, `min()`, `max()`, `average()`, `sum()`
+
+#### 3. Short-Circuiting Operations
+
+Some terminal operations can also be considered short-circuiting operations because they don't necessarily process all elements of the stream
+
+- **`anyMatch(Predicate<T>)`**
+- **`allMatch(Predicate<T>)`**
+- **`noneMatch(Predicate<T>)`**
+- **`findFirst()`**
+- **`findAny()`**
+- **`limit(long maxSize)`** (an intermediate operation that short-circuits processing)
+
+These are the primary methods used for stream operations in Java. You can chain intermediate operations together to create complex data transformations, followed by a terminal operation to produce the result.
+
+#### Reduction operations
+
+They combine the contents of a stream, to return a value, or they can return a collection
+
+- **`<R,A> R collect(Collector<? super T,A,R> collector)`**
+- **`<R> R collect(Supplier<R> supplier, BiConsumer<R,? super T> accumulator, BiConsumer<R,R> combiner)`**
+  - Mutable reduction operation
+  - `.collect(() -> new TreeSet(Comparator.comparing(Student::getStudentId)), TreeSet::Add, TreeSet:addAll)`
+- **`Optional<T> reduce(BinaryOperator<T> accumulator)`**
+- **`T reduce(T identity, BinaryOperator<T> accumulator)`**
+- **`<U> U reduce(U identity, BiFunction<U,? super T,U> accumulator, BinaryOperator<U> combiner)`**
+- **`Object[] toArray()`**
+- **`A[] toArray(IntFunction<A[]> generator)`**
+  - `.toArray(size -> new Student[size])`
+  - It returns a typed array
+- **`List<T> toList()`**
+
+`Collectors.toList()` returns a mutable collection, while `stream.toList()` returns an immutable one
+
+#### Additional methods
 
 - `Stream.concat(...streams)`
-
   - process multiple streams
-
-- `.limit()`
-  - limit the number processing elements of the stream
-- `filter()`
 - `takeWhile()`
 - `dropWhile()`
-- `skip(n)`
-  - skit the first n elements
-- `map()`
 - `mapToDouble()`, `mapToInt()`, `mapToLong()` transforms into => DoubleStream, IntStream, LongStream
   - Faster for those types of numbers
   - Then to return a new stream from them use `mapToObj()` or `boxed(0)`
-    - transforms from DoubleStream, IntStream, LongStream into Stream<Double>, Stream<Int>, Stream<Long>
-- `peak()`
-  - just like tap in rxjs
-- `sorted()` and `sorted(Comparator)`
-- `distinct()`
-  - Removes duplicate values
-- 
+    - transforms from DoubleStream, IntStream, LongStream into `Stream<Double>`, `Stream<Int>`, `Stream<Long>`
+
+#### Streams into Maps
+
+- `.collect(Collectors.groupingBy(Employee::getDepartment))`
+- `.collect(Collectors.groupingBy(Employee::getDepartment), Collectors.filtering(s -> s.getAge() <= minAge), toList())`
+- `.collect(Collectors.partitioningBy(Student::hasProgrammingExperience));`
+  - Map has two keys: true and false
+  - Value is the list of the values that pass and the ones that don't
+- `.collect(Collectors.partitioningBy(Student::hasProgrammingExperience), Collectors.counting());`
+  - value is the number of the values that pass and the ones that don't
+- ```.collect(
+                        Collectors.groupingBy(
+                                Student::getCountryCode,    Collectors.groupingBy(Student::getGender)
+                        )
+                );
+  ```
+  - Multilevel mapping
+- `.collect(Collectors.partitioningBy(Student::hasProgrammingExperience, Collectors.counting()))`
+  - {true=number, false=number}
+
+## **Relooping in `.collect`**
+
+`Collectors.counting()` is like a reloop on the map values
+
+The same works with `Collectors.filtering()`, `Collectors.averagingDouble(), Collectors.summarizingDouble()`, etc.
+
+```java
+students.stream()
+        .collect(Collectors.groupingBy(student -> student.getEngagementMap().keySet().size(), Collectors.counting()));
+```
+
+```java
+students.stream()
+        .flatMap(student -> student.getEngagementMap().values().stream())
+        .collect(Collectors.groupingBy(CourseEngagement::getCourseCode, Collectors.averagingDouble(CourseEngagement::getPercentComplete)));
+```
+
+- You can also chain `Collectors.groupingBy()`
+
+## Optional
+
+- If a method return type is `Optional<T>`, never return `null`, instead return `Optional.empty()`
+- `void ifPresent(Consumer<? super T> action)` and `ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)` just simulate an `if else` block
+- `orElse(function())`, in this way, the function always gets executed
+  - Prefer `.orElseGet(Supplier<? extends T> supplier)`, which gets executed only if the optional is null
+- `Optional.map` and `Optional.filter` return the values from the results, else return `Optional.empty()`
+- Optional was designed to be used as a return type
+  - So be careful while using it
+  - Wrapping elements in Optional add complexity, and reduces readability
+- Optional is not serializable
 
 ## Java intellij conf
 
