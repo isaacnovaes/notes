@@ -1276,6 +1276,30 @@ students.stream()
   - Wrapping elements in Optional add complexity, and reduces readability
 - Optional is not serializable
 
+## Math.random and Random
+
+It uses and instance of the Random class, then call Random.nextDouble()
+
+For subsequent calls, the previously created instance is used
+
+### random.ints(), random.longs(), random.doubles()
+
+Source for a random stream of ints, longsm doubles, just like IntStream.iterate(), etc.
+
+## BigDecimal
+
+This class stores a floating point number in two integer fields
+
+The first holds **an unscaled value**, with a type og BigInteger (class in java.math), which stores numbers bigger than even long values
+
+The second field is the **scale**, which can be positive, 0, or negative
+
+The scale defines how many digits are after the decimal point
+
+A negative scale mean that the unscaled value is divided by **10^scale**
+
+Always use strings for initialization`new BigDecimal(stringRepresentation)`
+
 ## Java intellij conf
 
 - Editor > general >
