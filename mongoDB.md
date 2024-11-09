@@ -18,8 +18,9 @@ The data directory `/var/lib/mongodb` and the log directory `/var/log/mongodb` a
 
 Reset it by starting db with:
 
-````bash
+```bash
 mongod --dbpath <path> --logpath <path>/file-name.log
+```
 
 ### ulimit Considerations
 
@@ -52,9 +53,14 @@ isaac hard rss unlimited
 
 isaac soft nproc 64000
 isaac hard nproc 64000
+```
 
-````
+## Working with mongoDB
 
-### Install mongoDB tools
+Structure
 
-[See docs](https://www.mongodb.com/docs/database-tools/installation/installation-linux/#installation)
+![Collections framework](working-with-mongodb.png)
+
+A closer look
+
+![A closer look](a-closer-look.png)
