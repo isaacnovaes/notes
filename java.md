@@ -86,6 +86,7 @@ String textBlock = """
 | c          | char              |
 | f          | floating point    |
 | n          | new line          |
+| t          | date/time         |
 | %          | percent           |
 
 - For outputting, use `System.out.printf()`
@@ -1299,6 +1300,153 @@ The scale defines how many digits are after the decimal point
 A negative scale mean that the unscaled value is divided by **10^scale**
 
 Always use strings for initialization`new BigDecimal(stringRepresentation)`
+
+### MathContext
+
+Instead of defining all the time scale and precision, you can define it once than propagate them to other operations
+
+## **`java.time`**
+
+![java time representation](image.png)
+
+![java time related packages](image-1.png)
+
+Temporal instances are immutable. A new instance is returned from methods. Then you need to assign the result of these methods to a variable. `The original instance won't be modified`
+
+LocalTime doesn't have a time zone
+
+### LocalDate
+
+- LocalDate.now()
+- LocalDate.of()
+- LocalDate.ofYearDay()
+- LocalDate.parse()
+- localDateInstance.get(ChronoField...)
+  - localDateInstance.getMonth(), localDateInstance.getYear(), .etc
+- localDateInstance.with(ChronoField..., value)
+  - localDateInstance.withYear(), localDateInstance.withMonth(), .etc
+  - They work like sets, which return a new instance
+  - The localDateInstance doesn't get modified
+- localDateInstance.plus(value, ChronoField...)
+  - localDateInstance.plusWeeks(), localDateInstance.plusMonths(), etc,
+- localDateInstance.minus(value, ChronoField...)
+  - localDateInstance.minusWeeks(), localDateInstance.minusMonths(), etc,
+- localDateInstance.isAfter(anotherLocalDateInstance)
+- localDateInstance.isBefore(anotherLocalDateInstance)
+- localDateInstance.equals(anotherLocalDateInstance)
+- localDateInstance.isLeapYear()
+- localDateInstance.lengthOfMonth(), localDateInstance.lengthOfYear()
+  - returns the length of month/year represented by this date
+- localDateInstance.until()
+- localDateInstance.datesUntil(LocalDate endExclusive)
+  - returns an ordered stream of dates
+- localDateInstance.datesUntil(LocalDate endExclusive, Period step)
+  - returns an ordered stream of dates by given incremental step
+
+### LocalTime
+
+Similar methods as LocalDate
+
+### LocalDateTime
+
+Same methods as LocalDate and LocalTime
+
+### `.format(DateTimeFormatter)`
+
+More flexible date time format methods
+
+You can also used locale for these methods
+
+Example
+
+```java
+localDateTimeInstance.format(DateTimeFormatter.ISO_WEEK_DATE);
+localDateTimeInstance.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+```
+
+### Period, Instant, Duration
+
+- Period: interval on a date time line, like 20 days (2020/03/25 - 2020/04/14)
+  - Specified by elapsed time in date units like days, months, or years
+  - Fields
+- Duration: just like Period, but the interval is time based, like 6 hours and 40 minutes (06:40 - 13:20)
+  - Specified by elapsed time in time units like seconds, minutes, or hours
+- Instant: a point on a time line, like March 20 at 4:45pm
+  - It has 2 fields which are the counts from 1970/01/01, aka Epoch Time
+    - seconds, which is a long
+    - nanos, which is an int
+    - Z suffix is a reference to UTC
+
+![alt text](image-2.png)
+
+## Don't use these classes for time/date
+
+`Use classes from java.time instead`
+
+- Date
+- TimeZone
+- GregorianCalendar
+- DateFormat
+- SimpleDateFormat
+
+### ZoneId
+
+- ZoneId.getSystemDefault() // system zone id
+- ZoneId.getAvailableZoneIds()
+
+### ZonedDateTime
+
+- methods which work with LocalDateTime, ZoneId, so that zones can also be manipulated
+- If you just want a LocalDateTime with a different ZoneId, use LocalDateTime.ofInstant()
+
+## ResourceBundle data in a .properties file
+
+Data that's customized is often textual, in the form of user messages, button labels or menu items. It may contains other elements, such as images or audio components
+
+The most common way of supplying sata for a ResourceBundle is using the properties file
+
+This is a simple text file, containing key value pairs
+
+Key = string
+Value = string
+
+```java
+TextMessages.properties file
+
+yes = yes
+no = no
+hello_world = Hello world
+```
+
+```java
+TextMessages_pt-br.properties file
+
+yes = sim
+no = nao
+hello_world = Ola mundo
+```
+
+Keys should be the same
+
+## Regular expression
+
+Common classes that have methods which use regular expressions
+
+- String
+  - boolean matches(String regex)
+  - String replaceAll(String regex, String replacement)
+  - String replaceFirst(String regex, String replacement)
+  - String[] split(String regex)
+  - String[] split(String regex, int limit)
+- Scanner
+- Formatter
+- DateTimeFormatter
+- Duration
+
+Special classes from the `java.util.regex` package that help you implement your own functionality
+
+- Pattern
+- Matcher
 
 ## Java intellij conf
 
