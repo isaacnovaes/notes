@@ -105,7 +105,7 @@ Don't use `.update`, use `updateOne` instead
 
 When querying an array, you can pass just the value you want, for example:
 
-```bash
+```javascript
 db.passengers.find()
 {
     name: "John",
@@ -120,6 +120,7 @@ If the array elements are objects, you have to specify all the object or use `$e
 ## Projection
 
 > By default, queries in MongoDB return all fields in matching documents
+
 > To limit the amount of data that MongoDB sends to applications, you can include a `projection` document to specify or restrict fields to return
 
 It filters the query in the db itself, so that less data is sent over the wire
@@ -301,3 +302,102 @@ For many documents, for example `insertMany()`, the atomicity is guaranteed per 
 ```bash
 mongoimport tv-shows.json -d movieData -c movies --jsonArray --drop
 ```
+
+## Read operation
+
+### `$eq` operator - security Implication
+
+Always use the explicit form `{ field: { $eq: <value> } }` with user-supplied input to avoid problems with maliciously formed queries
+
+### Querying arrays
+
+- Exact equality
+
+```javascript
+find({ genres: ['Drama'] });
+```
+
+- Presence of an array item
+
+```javascript
+find({ genres: 'Drama' });
+```
+
+### Comparison operators
+
+- `$eq`
+- `$ne`
+- `$gt`
+- `$gte`
+- `$lt`
+- `$lte`
+
+### `$in` and `$nin` operators, comparison operators
+
+The $in operator compares each parameter to each document in the collection, which can lead to performance issues. To improve performance:
+
+- It is recommended that you limit the number of parameters passed to the
+  $in operator to tens of values
+- Using hundreds of parameters or more can negatively impact query performance.
+- Create an index on the field you want to query.
+
+- `$in` queries possible values for an item
+
+```javascript
+find({ age: { $in: [55, 65, 35] } });
+```
+
+- `$nin` is the opposite of `$in`
+
+### Logical operators
+
+Logical operators return data based on expressions that evaluate to true or false
+
+MongoDB provides an implicit `AND` operation when specifying a comma separated list of expressions
+
+Sometimes you don't need `$and`, because of the implicit behavior or because of a query rewrite
+
+When passed an array argument, the $not operator may yield unexpected results. To match documents based on multiple false conditions, use $nor
+
+- `$or: []`
+- `$not: []`
+- `$and: []`
+- `{field: $not: {}}`
+  - You must use the $not operator with another operator expression
+  - Sometimes you just need a `$ne` operator
+
+### `$or` versus `$in`
+
+When using $or with `expressions` that are equality checks `for the value of the same field, use the $in operator instead of the $or operator`
+
+### Element query
+
+- `$exists`
+  - The $exists operator matches documents that contain or do not contain a specified field, `including documents where the field value is null`
+- `$type`
+  - You can filter fields by their value type, like `number`, `string`, `array`, `date`, etc.
+
+### Evaluation query
+
+Evaluation operators return data based on evaluations of either individual fields or the entire collection's documents
+
+- `$mod: [divisor, remainder]`
+- `$regex`
+- `$jsonSchema`
+- `$expr`
+  - `find({$expr: {$gt: ["$fieldName1", "fieldName2"]}})`
+
+### Array query
+
+Array operators return data based on array conditions
+
+- `{ <arrayField>: { $all: [ <value1> , <value2> ... ] } }`
+  - array that contains all the specified elements
+- `$elemMatch`
+- `$size`
+
+## Cursor
+
+- `.sort()`
+- `.skip()`
+- `.limit()`
