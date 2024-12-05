@@ -2,9 +2,9 @@
 
 Hu`mongo`us database
 
-In a db, you have collections, which store schemaless (some data might be incomplete, documents can have different structure) documents in BSON format
+In a db, you have collections, which can store schemaless (some data might be incomplete, documents can have different structure) documents or documents with a schema (validator) in BSON format
 
-You are responsible for the schemaless mess
+You are responsible for organizing the schemaless documents
 
 It's very efficient for apps that have a huge IO workload
 
@@ -89,7 +89,7 @@ You write JSON, but the driver converts and store it in BSON
 
 It has a binary data
 
-It extends JSON types, example more detailed number types
+It extends JSON types, for example more detailed number types or date type
 
 It has an efficient storage
 
@@ -401,3 +401,40 @@ Array operators return data based on array conditions
 - `.sort()`
 - `.skip()`
 - `.limit()`
+
+## Update operators
+
+- `$set`
+- `$inc`
+  - You cannot update and set the same field at the same time
+  - Amount to increment can be positive or negative
+  - Use of the $inc operator on a field with a null value will `generate an error`
+  - `{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }`
+- `$min`
+  - The $min updates the value of the field to a specified value `if the specified value is less` than the `current value` of the field
+  - `{ $min: { <field1>: <value1>, ... } }`
+  - If the field does not exist, the $min operator sets the field to the specified value
+- `$max`
+  - The $max operator updates the value of the field to a specified value `if the specified value is greater` than the `current value` of the field.
+  - `{ $max: { <field1>: <value1>, ... } }`
+  - If the field does not exist, the $max operator sets the field to the specified value
+- `$mul`
+  - Multiply the value of a field by a number
+  - `{ $mul: { <field1>: <number1>, ... } }`
+- `$unset`
+  - deletes a particular field
+  - `{ $unset: { <field1>: "", ... } }`
+  - The specified value in the $unset expression (i.e. "") does not impact the operation
+  - If the field does not exist, then $unset does nothing (i.e. no operation)
+  - When used with $ to match `an array element, $unset replaces the matching element with null` rather than removing the matching element from the array
+- `$rename`
+  - updates the name of a field
+  - `{ $rename: { <field1>: <newName1>, <field2>: <newName2>, ... } }`
+  - The $rename operator can move fields into and out of embedded documents
+  - $rename does not work on embedded documents in arrays
+
+### Update options
+
+- `upsert: true`
+  - If the document exists, update it
+  - Else, create a document with both data from filter and data
