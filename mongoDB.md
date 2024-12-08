@@ -438,3 +438,104 @@ Array operators return data based on array conditions
 - `upsert: true`
   - If the document exists, update it
   - Else, create a document with both data from filter and data
+
+## Array update operators
+
+### positional $ operator
+
+It represents the array item to update
+
+`The positional $ operator acts as a placeholder for the first match of the update query document`
+
+`When matching on multiple arrays, instead use the filtered positional operator $[<identifier>]`
+
+```javascript
+db.collection.updateOne(
+   { <array>: value ... },
+   { <update operator>: { "<array>.$" : value } }
+)
+```
+
+The positional $ operator cannot be used for queries which traverse more than one array, such as queries that traverse arrays nested within other arrays, because `the replacement for the positional $ operator is a single value`
+
+When used with the `$unset operator`, the positional $ operator does not remove the matching element from the array but rather `sets it to null`
+
+If the query matches the array using a negation operator, such as `$ne, $not, or $nin`, then `you cannot use the positional $ operator` to update values from this array
+
+### positional $[] operator
+
+It's kind of a loop over the items of the selected array
+
+It updates all items in the array
+
+```javascript
+db.collection.updateOne(
+   { <query conditions> },
+   { <update operator>: { "<array>.$[]" : value } }
+)
+```
+
+### positional operator $[identifier]
+
+It identifies the array items that match the `arrayFilters` conditions for an update operation
+
+```javascript
+db.collection.updateMany(
+   { <query conditions> },
+   { <update operator>: { "<array>.$[<identifier>]" : value } },
+   { arrayFilters: [ { <identifier>: <condition> } ] }
+)
+```
+
+### Updating nested arrays
+
+`The dot notation doesn't work`
+
+Use a combination of $[] and $[identifier]
+
+### `$push`
+
+Add items to the array
+
+```javascript
+{ $push: { <arrayName>: <value1>, ... } }
+```
+
+You can also use with modifiers
+
+- `$each`
+  - It's an array os items to add to the array
+- `$slice`
+  - It modify the array size, which removes array items
+  - Requires the use of $each modifier
+- `$sort`
+  - It sorts the array after the action of the previous modifiers
+  - Requires the use of $each modifier
+- `$position`
+  - It defines the location where to start inserting the items added by the $each modifier
+  - Without the $position modifier, the $push appends the items to the end of the array
+  - Requires the use of $each modifier
+
+```javascript
+{ $push: { <arrayField>: { <modifier1>: <value1>, <modifier2>: <value2>... }, ... } }
+```
+
+```javascript
+db.students.updateOne(
+	{ _id: 5 },
+	{
+		$push: {
+			quizzes: {
+				$each: [
+					{ wk: 5, score: 8 },
+					{ wk: 6, score: 7 },
+					{ wk: 7, score: 6 },
+				],
+				$position: 3,
+				$sort: { score: -1 },
+				$slice: 4,
+			},
+		},
+	}
+);
+```
