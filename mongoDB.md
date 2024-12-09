@@ -432,6 +432,24 @@ Array operators return data based on array conditions
   - `{ $rename: { <field1>: <newName1>, <field2>: <newName2>, ... } }`
   - The $rename operator can move fields into and out of embedded documents
   - $rename does not work on embedded documents in arrays
+- `$currentDate`
+  - sets the value of a field to the current date, either as a Date or a timestamp
+  - The default type is Date
+  - `{ $currentDate: { <field1>: <typeSpecification1>, ... } }`
+    - `<typeSpecification>` can be either:
+    - a boolean true to set the field value to the current date as a Date
+    - a document { $type: "timestamp" } or { $type: "date" } which explicitly specifies the type
+- `$setOnInsert`
+  - If an update operation with `upsert: true` results in an insert of a document, then $setOnInsert `assigns the specified values to the fields in the document`
+  - query, set, then setOnInsert are used to create the new document
+
+```javascript
+db.collection.updateOne(
+   <query>,
+   { $setOnInsert: { <field1>: <value1>, ... } },
+   { upsert: true }
+)
+```
 
 ### Update options
 
@@ -538,4 +556,52 @@ db.students.updateOne(
 		},
 	}
 );
+```
+
+### `$pull`
+
+Removes from an existing array all instances of a value or values that match a specified condition
+
+```javascript
+{ $pull: { <field1>: <value|condition>, <field2>: <value|condition>, ... } }
+```
+
+```javascript
+db.stores.insertMany( [
+   {
+      _id: 1,
+      fruits: [ "apples", "pears", "oranges", "grapes", "bananas" ],
+      vegetables: [ "carrots", "celery", "squash", "carrots" ]
+   },
+   {
+      _id: 2,
+      fruits: [ "plums", "kiwis", "oranges", "bananas", "apples" ],
+      vegetables: [ "broccoli", "zucchini", "carrots", "onions" ]
+   }
+] )
+.
+.
+.
+db.stores.updateMany(
+	{},
+	{ $pull: { fruits: { $in: ['apples', 'oranges'] }, vegetables: 'carrots' } }
+);
+```
+
+```javascript
+db.profiles.insertOne( { _id: 1, votes: [ 3, 5, 6, 7, 7, 8 ] } )
+.
+.
+.
+db.profiles.updateOne({ _id: 1 }, { $pull: { votes: { $gte: 6 } } });
+```
+
+### `$pop`
+
+Removes the first or last element of an array
+
+Pass $pop a value of -1 to remove the first element of an array and 1 to remove the last element in an array
+
+```javascript
+db.students.updateOne({ _id: 1 }, { $pop: { scores: -1 } });
 ```
