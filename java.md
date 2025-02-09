@@ -888,7 +888,7 @@ Collection objects, in many languages, include arrays, lists, vectors, sets, que
 
 In java, array and Arrays are not part of the Collection framework
 
-![Collections framework](collections-framework.png)
+![Collections framework](images/collections-framework.png)
 
 ### Methods
 
@@ -1307,9 +1307,9 @@ Instead of defining all the time scale and precision, you can define it once tha
 
 ## **`java.time`**
 
-![java time representation](image.png)
+![java time representation](images/java-time.png)
 
-![java time related packages](image-1.png)
+![java time related packages](images/java-time-related-packages.png)
 
 Temporal instances are immutable. A new instance is returned from methods. Then you need to assign the result of these methods to a variable. `The original instance won't be modified`
 
@@ -1364,7 +1364,7 @@ localDateTimeInstance.format(DateTimeFormatter.ISO_WEEK_DATE);
 localDateTimeInstance.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
 ```
 
-### Period, Instant, Duration
+### Period, Instant, and Duration
 
 - Period: interval on a date time line, like 20 days (2020/03/25 - 2020/04/14)
   - Specified by elapsed time in date units like days, months, or years
@@ -1377,7 +1377,7 @@ localDateTimeInstance.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.M
     - nanos, which is an int
     - Z suffix is a reference to UTC
 
-![alt text](image-2.png)
+![java Period, Instant, and Duration](images/java-period-instant-duration.png)
 
 ## Don't use these classes for time/date
 

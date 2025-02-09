@@ -77,11 +77,11 @@ A document is the peace of data stored
 
 Structure
 
-![Collections framework](working-with-mongodb.png)
+![Collections framework](images/mongodb-working-with-mongodb.png)
 
 A closer look
 
-![A closer look](a-closer-look.png)
+![A closer look](images/mongodb-a-closer-look.png)
 
 ## JSON vs BSON
 
@@ -95,7 +95,7 @@ It has an efficient storage
 
 ## Crud operations
 
-![alt text](image-3.png)
+![mongodb crud operations](images/mongodb-crud-operations.png)
 
 Don't use `.update`, use `updateOne` instead
 
@@ -331,6 +331,8 @@ find({ genres: 'Drama' });
 - `$gte`
 - `$lt`
 - `$lte`
+- `$in`
+- `$nin`
 
 ### `$in` and `$nin` operators, comparison operators
 
@@ -605,3 +607,42 @@ Pass $pop a value of -1 to remove the first element of an array and 1 to remove 
 ```javascript
 db.students.updateOne({ _id: 1 }, { $pop: { scores: -1 } });
 ```
+
+## Indexes
+
+A simple list of values + pointers to the original document
+
+Indexes are special data structures that store a small portion of the collection's data set in an easy-to-traverse form
+
+`The index stores the value of a specific field or set of fields, ordered by the value of the field`
+
+The ordering of the index entries supports efficient equality matches and range-based query operations
+
+Improve read, update, and delete operations, but hurt create operation performance
+
+`MongoDB creates a unique index on the _id field during the creation of a collection`
+
+### Create index
+
+The index items are ordered (ascending or descending - depending on how you created the index)
+
+```javascript
+db.persons.createIndex({"dob.age": 1})  // ASC
+db.persons.createIndex({"dob.age": -1}) // DES
+```
+
+MongoDB is now able to quickly find a fitting document when you filter for its age as it has a sorted list
+
+Sorted lists are way quicker to search because you can skip entire ranges (and don't have to look at every single document)
+
+Additionally, sorting (via sort(...)) will also be sped up because you already have a sorted list
+
+Of course this is only true when sorting for the age
+
+Indexes slow down queries that need to return a big portion of the collection
+
+Because, comparing to a normal query (COLLSCAN), the query with index just add a second step (IXSCAN)
+
+// for read, update, and delete operations
+.explain()
+.explain("executionStats")
