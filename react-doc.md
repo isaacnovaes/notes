@@ -1,35 +1,5 @@
 # React doc notes
 
-- [React doc notes](#react-doc-notes)
-  - [Components](#components)
-  - [JSX](#jsx)
-    - [JSX Keys](#jsx-keys)
-    - [KEEP COMPONENTS PURE](#keep-components-pure)
-  - [Events](#events)
-  - [Render process (3 steps)](#render-process-3-steps)
-  - [React state batching](#react-state-batching)
-  - [useState hook](#usestate-hook)
-    - [Calling useState many times](#calling-usestate-many-times)
-    - [State updater function naming conventions](#state-updater-function-naming-conventions)
-    - [dos and donts](#dos-and-donts)
-    - [It’s useful to consider components as “controlled” (driven by props) or “uncontrolled” (driven by state)](#its-useful-to-consider-components-as-controlled-driven-by-props-or-uncontrolled-driven-by-state)
-    - [When a component loses state](#when-a-component-loses-state)
-  - [useReducer](#usereducer)
-  - [useContext](#usecontext)
-    - [Alternatives](#alternatives)
-    - [Before you use context, try passing props or passing JSX as children](#before-you-use-context-try-passing-props-or-passing-jsx-as-children)
-  - [useRef](#useref)
-    - [Limitations of React state don’t apply to refs](#limitations-of-react-state-dont-apply-to-refs)
-  - [useState and useRef return stable identity values (can be safely used in dependency arrays)](#usestate-and-useref-return-stable-identity-values-can-be-safely-used-in-dependency-arrays)
-  - [useEffect](#useeffect)
-    - [You don’t need Effects](#you-dont-need-effects)
-    - [Effect writing good practice](#effect-writing-good-practice)
-    - [useEffectEvent(future)](#useeffecteventfuture)
-  - [Pay attention](#pay-attention)
-  - [useMemo](#usememo)
-    - [Is memoization needed?](#is-memoization-needed)
-    - [Children as JSX plus trick](#children-as-jsx-plus-trick)
-
 ## Components
 
 - React components are JS functions that return JSX
@@ -139,10 +109,9 @@ use state name with prefix 'prev': setState(prevShowDropdown => !prevShowDropdow
 
 ```js
 function Message({ initialColor }) {
-// The `color` state variable holds the _first_ value of `initialColor`.
-// Further changes to the `initialColor` prop are ignored.
-const [color, setColor] = useState(initialColor);
-...
+	// The `color` state variable holds the _first_ value of `initialColor`.
+	// Further changes to the `initialColor` prop are ignored.
+	const [color, setColor] = useState(initialColor);
 }
 ```
 
@@ -172,13 +141,12 @@ it’s the position in the UI tree — not in the JSX markup — that matters to
 ```
 
 ```jsx
-  const Comp = () => {
-    	if(...) {
-    		return <div><Counter isFancy={true}/> .... </div>
-    	}
-    	...
-    	return <div><Counter isFancy={false... </div>
-    }
+const Comp = () => {
+  if(...) {
+    return <div><Counter isFancy={true}/> .... </div>
+  }
+  ...
+  return <div><Counter isFancy={false... </div>
 }
 ```
 
